@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -8,7 +9,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { BoardService } from './board.service';
+import { RegisterBoardDto } from '../dto/create-board.dto';
+import { BoardService } from '../service/board.service';
 
 @Controller('study/board')
 export class BoardController {
@@ -16,6 +18,7 @@ export class BoardController {
 
   @Get('/list')
   getBoardList(@Query('page') page: number) {
+    console.log(process.env.DATABASE_USER);
     return this.boardService.getBoardList(page);
   }
 
@@ -25,8 +28,8 @@ export class BoardController {
   }
 
   @Post()
-  registerBoard() {
-    return this.boardService.registerBoard();
+  registerBoard(@Body() body: RegisterBoardDto) {
+    return this.boardService.registerBoard(body);
   }
 
   @Patch()
