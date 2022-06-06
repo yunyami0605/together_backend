@@ -1,12 +1,20 @@
-import { IsInt, Length } from 'class-validator';
+import { IsInt, IsOptional, Length } from 'class-validator';
+import { PrimaryGeneratedColumn } from 'typeorm';
 
 export class RegisterBoardDto {
-  @IsInt()
-  id: string;
-
   @Length(4, 40)
   title: string;
-  // content: string;
-  // created_date: string;
-  // updated_date: string;
+
+  @Length(1, 200)
+  content: string;
+}
+
+export class UpdateBoardDto {
+  @IsOptional()
+  @Length(4, 40)
+  title: string;
+
+  @IsOptional()
+  @Length(1, 200)
+  content: string;
 }

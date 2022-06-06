@@ -3,13 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   ParseIntPipe,
   Patch,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { RegisterBoardDto } from '../dto/create-board.dto';
+import { RegisterBoardDto, UpdateBoardDto } from '../dto/create-board.dto';
 import { BoardService } from '../service/board.service';
 
 @Controller('study/board')
@@ -18,13 +19,14 @@ export class BoardController {
 
   @Get('/list')
   getBoardList(@Query('page') page: number) {
-    console.log(process.env.DATABASE_USER);
+    console.log(page);
     return this.boardService.getBoardList(page);
+    // return 2;
   }
 
-  @Get()
-  getBoardContent() {
-    return this.boardService.getBoard();
+  @Get(':id')
+  getBoardContent(@Param('id') id: number) {
+    return this.boardService.getBoard(id);
   }
 
   @Post()
@@ -32,13 +34,15 @@ export class BoardController {
     return this.boardService.registerBoard(body);
   }
 
-  @Patch()
-  updateBoard() {
-    return this.boardService.updateBoard();
+  @Patch(':id')
+  updateBoard(@Param('id') id: number, @Body() body: UpdateBoardDto) {
+    console.log('@ UPD');
+    console.log(body);
+    return this.boardService.updateBoard(id, body);
   }
 
-  @Delete()
-  deleteBoard() {
-    return this.boardService.deleteBoard();
+  @Delete(':id')
+  deleteBoard(@Param('id') id: number) {
+    return this.boardService.deleteBoard(id);
   }
 }

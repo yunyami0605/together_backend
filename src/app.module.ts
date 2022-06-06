@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { StudyModule } from './study/study.module';
+import { typeORMConfig } from '../ormconfig';
+import { BoardModule } from './study/board/board.module';
+import { StudyBoardEntity } from './study/board/entity/board.entity';
 
 @Module({
   imports: [
@@ -17,8 +20,8 @@ import { StudyModule } from './study/study.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [],
-      synchronize: true,
+      entities: [__dirname + '../**/*.entity.{js,ts}', StudyBoardEntity],
+      synchronize: false,
     }),
   ],
   controllers: [AppController],

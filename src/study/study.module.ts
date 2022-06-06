@@ -3,6 +3,5 @@ import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [BoardModule],
-
 })
 export class StudyModule {}
