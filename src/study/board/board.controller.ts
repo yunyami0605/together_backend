@@ -10,8 +10,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { RegisterBoardDto, UpdateBoardDto } from '../dto/create-board.dto';
-import { BoardService } from '../service/board.service';
+import { RegisterBoardDto, UpdateBoardDto } from './dto/create-board.dto';
+import { BoardService } from './board.service';
 
 @Controller('study/board')
 export class BoardController {

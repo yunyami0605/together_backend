@@ -8,6 +8,8 @@ import { StudyModule } from './study/study.module';
 import { typeORMConfig } from '../ormconfig';
 import { BoardModule } from './study/board/board.module';
 import { StudyBoardEntity } from './study/board/entity/board.entity';
+import { UserModule } from './user/user.module';
+import { UserEntity } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -20,9 +22,15 @@ import { StudyBoardEntity } from './study/board/entity/board.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [__dirname + '../**/*.entity.{js,ts}', StudyBoardEntity],
+      entities: [
+        __dirname + '../**/*.entity.{js,ts}',
+        StudyBoardEntity,
+        UserEntity,
+      ],
       synchronize: false,
+      autoLoadEntities: true,
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
