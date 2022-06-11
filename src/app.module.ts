@@ -1,4 +1,9 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,9 +15,19 @@ import { BoardModule } from './study/board/board.module';
 import { StudyBoardEntity } from './study/board/entity/board.entity';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entities/user.entity';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+// import { WinstonModule } from 'nest-winston';
+// import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    // LoggerModule.forRoot(),
+    // WinstonModule.forRootAsync({
+    //   useFactory: () => ({
+    //     // options
+    //   }),
+    //   inject: [],
+    // }),
     StudyModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -41,4 +56,8 @@ import { UserEntity } from './user/entities/user.entity';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

@@ -10,7 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { RegisterBoardDto, UpdateBoardDto } from './dto/create-board.dto';
+import { CreateBoardDto, UpdateBoardDto } from './dto/create-board.dto';
 import { BoardService } from './board.service';
 
 @Controller('study/board')
@@ -18,31 +18,27 @@ export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
   @Get('/list')
-  getBoardList(@Query('page') page: number) {
-    console.log(page);
-    return this.boardService.getBoardList(page);
-    // return 2;
+  findList(@Query('page') page: string) {
+    return this.boardService.findList(+page);
   }
 
   @Get(':id')
-  getBoardContent(@Param('id') id: number) {
-    return this.boardService.getBoard(id);
+  findOne(@Param('id') id: string) {
+    return this.boardService.findOne(+id);
   }
 
   @Post()
-  registerBoard(@Body() body: RegisterBoardDto) {
-    return this.boardService.registerBoard(body);
+  create(@Body() body: CreateBoardDto) {
+    return this.boardService.create(body);
   }
 
   @Patch(':id')
-  updateBoard(@Param('id') id: number, @Body() body: UpdateBoardDto) {
-    console.log('@ UPD');
-    console.log(body);
-    return this.boardService.updateBoard(id, body);
+  update(@Param('id') id: string, @Body() body: UpdateBoardDto) {
+    return this.boardService.update(+id, body);
   }
 
   @Delete(':id')
-  deleteBoard(@Param('id') id: number) {
-    return this.boardService.deleteBoard(id);
+  remove(@Param('id') id: string) {
+    return this.boardService.remove(+id);
   }
 }

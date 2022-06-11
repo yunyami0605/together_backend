@@ -8,7 +8,7 @@ export class UserService {
   constructor(private readonly userRepo: UserRepository) {}
 
   findList(page: number) {
-    const countInPage = 4;
+    const countInPage = 3;
     return this.userRepo.findUserList(page, countInPage);
   }
 
@@ -30,6 +30,6 @@ export class UserService {
   }
 
   remove(id: number) {
-    return this.userRepo.deleteUser(id);
+    return this.userRepo.removeUser(id);
   }
 }

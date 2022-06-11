@@ -8,13 +8,20 @@ import { UserEntity } from './entities/user.entity';
 export class UserRepository extends Repository<UserEntity> {
   //
   async findUserList(page: number, countInPage: number) {
-    const res = await this.createQueryBuilder('user')
-      .limit(page * countInPage)
-      .skip((page - 1) * countInPage)
-      // .where('studyBoard.id = :id', { id: 1 })
-      .getMany();
+    try {
+      const [list, count] = await this.createQueryBuilder('user')
+        .offset((page - 1) * countInPage)
+        .limit(page * countInPage)
+        .getManyAndCount();
 
-    return res;
+      return {
+        list,
+        count,
+        lastPage: Math.ceil(count / countInPage),
+      };
+    } catch (e: any) {
+      return null;
+    }
   }
 
   async findUser(id: number) {
@@ -44,12 +51,10 @@ export class UserRepository extends Repository<UserEntity> {
       .where('id = :id', { id })
       .execute();
 
-    console.log(res);
-
     return id;
   }
 
-  async deleteUser(id: number) {
+  async removeUser(id: number) {
     const res = await this.softDelete({ id });
 
     return id;

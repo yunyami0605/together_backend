@@ -1,14 +1,13 @@
+import { Logger } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { RegisterBoardDto, UpdateBoardDto } from '../dto/create-board.dto';
+import { CreateBoardDto, UpdateBoardDto } from '../dto/create-board.dto';
 import { StudyBoardEntity } from '../entity/board.entity';
 
 @EntityRepository(StudyBoardEntity)
 export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   //
   // create board
-  async createBoardRepo(
-    createBoardDto: RegisterBoardDto,
-  ): Promise<StudyBoardEntity> {
+  async createBoard(createBoardDto: CreateBoardDto): Promise<StudyBoardEntity> {
     const { title, content } = createBoardDto;
     const board = this.create({
       title,
@@ -19,26 +18,31 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     return board;
   }
 
-  async getBoardListRepo(page: number, countInPage: number) {
-    const res = await this.createQueryBuilder('studyBoard')
-      .limit(page * countInPage)
-      .skip((page - 1) * countInPage)
-      // .where('studyBoard.id = :id', { id: 1 })
-      .getMany();
+  async findBoardList(page: number, countInPage: number) {
+    try {
+      const [list, count] = await this.createQueryBuilder('studyBoard')
+        .offset((page - 1) * countInPage)
+        .limit(page * countInPage)
+        .getManyAndCount();
 
-    return res;
+      return {
+        list,
+        count,
+        lastPage: Math.ceil(count / countInPage),
+      };
+    } catch (e: any) {
+      return null;
+    }
   }
 
-  async getBoardRepo(id: number) {
+  async findBoard(id: number) {
     const res = await this.findOne({ where: { id } });
-
-    console.log(res);
 
     // # add undeined error logic
     return res;
   }
 
-  async updateBoardRepo(id: number, body: UpdateBoardDto) {
+  async updateBoard(id: number, body: UpdateBoardDto) {
     const res = await this.createQueryBuilder()
       .update('studyBoard')
       .set(body)
@@ -48,10 +52,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     return id;
   }
 
-  async deleteBoardRepo(id: number) {
+  async removeBoard(id: number) {
     const res = await this.softDelete({ id });
 
-    console.log(res);
     return id;
   }
 }

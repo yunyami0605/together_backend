@@ -1,7 +1,7 @@
 import { IsInt, IsOptional, Length } from 'class-validator';
 import { PrimaryGeneratedColumn } from 'typeorm';
 
-export class RegisterBoardDto {
+export class CreateBoardDto {
   @Length(4, 40)
   title: string;
 
