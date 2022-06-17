@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import { Repository } from 'typeorm';
-import { CreateBoardDto, UpdateBoardDto } from './dto/create-board.dto';
+import { CreateBoardDto } from './dto/create-board.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
 import { StudyBoardEntity } from './entity/board.entity';
 import { StudyBoardRepository } from './repository/board.repository';
 

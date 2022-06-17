@@ -1,20 +1,31 @@
-import { IsInt, IsOptional, Length } from 'class-validator';
-import { PrimaryGeneratedColumn } from 'typeorm';
+import {
+  IsArray,
+  IsDate,
+  IsDateString,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  Length,
+} from 'class-validator';
 
 export class CreateBoardDto {
+  type: string;
+
+  location: string;
+
+  @IsNumber()
+  persons: number;
+
+  @IsDateString()
+  period: string;
+
+  @IsOptional()
+  @IsArray()
+  tagList: string;
+
   @Length(4, 40)
   title: string;
 
-  @Length(1, 200)
-  content: string;
-}
-
-export class UpdateBoardDto {
-  @IsOptional()
-  @Length(4, 40)
-  title: string;
-
-  @IsOptional()
-  @Length(1, 200)
+  @Length(10, 1000)
   content: string;
 }

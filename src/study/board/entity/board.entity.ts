@@ -13,7 +13,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-// @Entity()
 @Entity({ schema: 'together', name: 'studyBoard' })
 export class StudyBoardEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
@@ -24,6 +23,21 @@ export class StudyBoardEntity extends BaseEntity {
 
   @Column('varchar', { name: 'content', length: 1000 })
   content: string;
+
+  @Column('varchar', { name: 'type' })
+  type: string;
+
+  @Column('varchar', { name: 'location' })
+  location: string;
+
+  @Column('int', { name: 'persons' })
+  persons: number;
+
+  @Column('datetime', { name: 'period' })
+  period: string;
+
+  // @Column('varchar', { name: 'tag_list' })
+  // tagList: string[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   ParseIntPipe,
   Patch,
@@ -10,13 +11,15 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CreateBoardDto, UpdateBoardDto } from './dto/create-board.dto';
+import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardService } from './board.service';
+import { UpdateBoardDto } from './dto/update-board.dto';
 
-@Controller('study/board')
+@Controller('api/study/board')
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
+  @Header('Access-Control-Allow-Origin', 'http://localhost:4000')
   @Get('/list')
   findList(@Query('page') page: string) {
     return this.boardService.findList(+page);

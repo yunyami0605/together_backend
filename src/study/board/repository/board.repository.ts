@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateBoardDto, UpdateBoardDto } from '../dto/create-board.dto';
+import { CreateBoardDto } from '../dto/create-board.dto';
+import { UpdateBoardDto } from '../dto/update-board.dto';
 import { StudyBoardEntity } from '../entity/board.entity';
 
 @EntityRepository(StudyBoardEntity)
@@ -8,10 +9,14 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   //
   // create board
   async createBoard(createBoardDto: CreateBoardDto): Promise<StudyBoardEntity> {
-    const { title, content } = createBoardDto;
+    const { title, content, type, location, persons, period } = createBoardDto;
     const board = this.create({
       title,
       content,
+      type,
+      location,
+      persons,
+      period,
       // status: 'PUBLIC',
     });
     await this.save(board);
@@ -37,6 +42,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
 
   async findBoard(id: number) {
     const res = await this.findOne({ where: { id } });
+
+    console.log('@@@ FIND');
+    console.log(res);
 
     // # add undeined error logic
     return res;
