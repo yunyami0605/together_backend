@@ -11,6 +11,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 
 @Controller('api/user')
 export class UserController {
@@ -24,6 +25,11 @@ export class UserController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
+  }
+
+  @Post('/login')
+  login(@Body() body: LoginUserDto) {
+    return this.userService.login(body);
   }
 
   @Post()

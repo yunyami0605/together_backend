@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 // import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { StudyBoardEntity } from './entity/board.entity';
 import { StudyBoardRepository } from './repository/board.repository';
@@ -15,7 +16,7 @@ export class BoardService {
   constructor(private readonly studyBoardRepo: StudyBoardRepository) {}
 
   findList(page: number) {
-    const countInPage = 3;
+    const countInPage = 10;
 
     return this.studyBoardRepo.findBoardList(page, countInPage);
   }

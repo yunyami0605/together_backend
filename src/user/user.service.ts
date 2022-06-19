@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
@@ -31,5 +32,9 @@ export class UserService {
 
   remove(id: number) {
     return this.userRepo.removeUser(id);
+  }
+
+  login(body: LoginUserDto) {
+    return this.userRepo.loginUser(body);
   }
 }

@@ -32,7 +32,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
 
       return {
         list,
-        count,
+        total: count,
+        curPage: page,
+        perPage: countInPage,
         lastPage: Math.ceil(count / countInPage),
       };
     } catch (e: any) {

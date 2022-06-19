@@ -10,7 +10,6 @@ import {
 
 export class CreateBoardDto {
   type: string;
-
   location: string;
 
   @IsNumber()
