@@ -18,6 +18,7 @@ import { UserEntity } from './user/entities/user.entity';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 // import { WinstonModule } from 'nest-winston';
 // import { LoggerModule } from 'nestjs-pino';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     //   }),
     //   inject: [],
     // }),
+
     StudyModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -46,6 +48,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
       autoLoadEntities: true,
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

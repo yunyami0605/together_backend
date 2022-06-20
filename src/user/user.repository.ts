@@ -1,5 +1,4 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { rmSync } from 'fs';
 import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
