@@ -10,10 +10,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('api/study/board')
 export class BoardController {
@@ -25,6 +27,7 @@ export class BoardController {
     return this.boardService.findList(+page);
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.boardService.findOne(+id);

@@ -15,8 +15,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  app.use(passport.initialize());
-  app.use(passport.session());
   await app.listen(3000);
 
   app.useGlobalPipes(new ValidationPipe());

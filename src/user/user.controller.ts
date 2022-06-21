@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,11 +30,15 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  login(@Body() body: LoginUserDto) {
-    return this.userService.login(body);
-  }
+  // @UseGuards(LocalAuthGuard)
+  // @Post('/login')
+  // // login(@Body() body: LoginUserDto) {
+  // //   return this.authService.login(body);
+  // // }
+  // login(@Request() req) {
+  //   console.log(req.user);
+  //   return this.userService.login(req.user);
+  // }
 
   @Post()
   create(@Body() body: CreateUserDto) {

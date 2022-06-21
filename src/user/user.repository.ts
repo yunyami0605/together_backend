@@ -67,15 +67,7 @@ export class UserRepository extends Repository<UserEntity> {
       select: ['id', 'email', 'password'],
     });
 
-    if (res) {
-      const bcrypt = require('bcrypt');
-
-      const result = await bcrypt.compare(password, res.password);
-
-      return result;
-    } else {
-      throw new ForbiddenException('잘못된 이메일 패스워드입니다.');
-    }
+    return res;
   }
 
   async updateUser(id: number, body: UpdateUserDto) {
