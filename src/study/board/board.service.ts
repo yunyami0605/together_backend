@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import { Repository } from 'typeorm';
@@ -10,9 +10,6 @@ import { StudyBoardRepository } from './repository/board.repository';
 
 @Injectable()
 export class BoardService {
-  // @InjectRepository(StudyBoardEntity)
-  // private workspacesRepository: Repository<StudyBoardEntity>;
-
   constructor(private readonly studyBoardRepo: StudyBoardRepository) {}
 
   findList(page: number) {
@@ -21,8 +18,14 @@ export class BoardService {
     return this.studyBoardRepo.findBoardList(page, countInPage);
   }
 
-  findOne(id: number) {
-    return this.studyBoardRepo.findBoard(id);
+  async findOne(id: number) {
+    const boardData = await this.studyBoardRepo.findBoard(id);
+
+    if (boardData) {
+      return this.studyBoardRepo.increaseBoardView(boardData);
+    } else {
+      throw new NotFoundException();
+    }
   }
 
   create(body: CreateBoardDto): Promise<StudyBoardEntity> {

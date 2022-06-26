@@ -21,14 +21,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return response.status(status).json({
         success: false,
         code: status,
-        data: err.message,
+        data: 'NO ERROR MSG',
       });
     }
 
     response.status(status).json({
       success: false,
       code: status,
-      data: err.message,
+      data: err,
     });
   }
 }

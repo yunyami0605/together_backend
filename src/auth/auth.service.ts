@@ -39,12 +39,14 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
 
     const token = this.jwtService.sign(payload);
-    const cookie = `Authentication=${token}; HttpOnly; Path=/; Max-Age=${3600}`;
+    const cookie = `auth=${token}; HttpOnly; Path=/; Max-Age=${3600}`;
 
     res.setHeader('Set-Cookie', cookie);
+
     user.password = undefined;
     return res.send({
-      success: true,
+      statusCode: 204,
+      data: token,
     });
   }
 }

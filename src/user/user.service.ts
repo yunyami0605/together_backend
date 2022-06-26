@@ -3,7 +3,6 @@ import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
-
 @Injectable()
 export class UserService {
   constructor(private readonly userRepo: UserRepository) {}
@@ -18,10 +17,14 @@ export class UserService {
   }
 
   async create(body: CreateUserDto) {
-    const isUser = await this.userRepo.findEmail(body.email);
+    const isUserEmail = await this.userRepo.findEmail(body.email);
+    const isUserNickname = await this.userRepo.findNickname(body.nickname);
 
     // @ 유저가 존재할 경우,
-    if (isUser) throw new HttpException('User is already existed', 403);
+    if (isUserEmail)
+      throw new HttpException('이미 존재하는 이메일입니다.', 403);
+    if (isUserNickname)
+      throw new HttpException('이미 존재하는 닉네임입니다.', 403);
 
     return this.userRepo.createUser(body);
   }

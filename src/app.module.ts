@@ -19,17 +19,10 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 // import { WinstonModule } from 'nest-winston';
 // import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
+import { ExampleMiddleware } from './middleware/example.middleware';
 
 @Module({
   imports: [
-    // LoggerModule.forRoot(),
-    // WinstonModule.forRootAsync({
-    //   useFactory: () => ({
-    //     // options
-    //   }),
-    //   inject: [],
-    // }),
-
     StudyModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
@@ -62,5 +55,6 @@ import { AuthModule } from './auth/auth.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+    // consumer.apply(LoggerMiddleware, ExampleMiddleware).forRoutes('*');
   }
 }

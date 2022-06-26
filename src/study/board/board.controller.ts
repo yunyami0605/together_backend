@@ -5,25 +5,31 @@ import {
   Get,
   Header,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
-  Put,
   Query,
+  Req,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UserService } from 'src/user/user.service';
 
 @Controller('api/study/board')
 export class BoardController {
-  constructor(private readonly boardService: BoardService) {}
+  constructor(
+    private readonly boardService: BoardService,
+    private readonly userService: UserService,
+  ) {}
 
-  @Header('Access-Control-Allow-Origin', 'http://localhost:4000')
+  @Header('Custom', 'Test Header')
   @Get('/list')
-  findList(@Query('page') page: string) {
+  async findList(@Query('page') page: string) {
+    const res = await this.userService.findOne(1);
+
     return this.boardService.findList(+page);
   }
 

@@ -36,6 +36,9 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('datetime', { name: 'period' })
   period: string;
 
+  @Column('int', { name: 'view' })
+  view: number;
+
   // @Column('varchar', { name: 'tag_list' })
   // tagList: string[];
 

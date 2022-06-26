@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,63 +31,90 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   async findUser(id: number) {
-    const res = await this.findOne({ where: { id } });
+    try {
+      const res = await this.findOne({ where: { id } });
 
-    return res;
+      return res;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async createUser({ email, password, nickname }: CreateUserDto) {
-    const res = await this.findEmail(email);
+    try {
+      const bcrypt = require('bcrypt');
 
-    if (res) {
-      throw new ForbiddenException('이미 존재하는 이메일입니다.');
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      const user = this.create({
+        email,
+        password: hashedPassword,
+        nickname,
+      });
+
+      await this.save(user);
+
+      return user;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
     }
-
-    const bcrypt = require('bcrypt');
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    const user = this.create({
-      email,
-      password: hashedPassword,
-      nickname,
-    });
-
-    await this.save(user);
-
-    return user;
   }
 
   async findEmail(email: string) {
-    const res = await this.findOne({ where: { email } });
+    try {
+      const res = await this.findOne({ where: { email } });
 
-    return res;
+      return res;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findNickname(nickname: string) {
+    try {
+      const res = await this.findOne({ where: { nickname } });
+
+      return res;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async loginUser({ email, password }: LoginUserDto) {
     // const res = await this.findEmail(email);
+    try {
+      const res = await this.findOne({
+        where: { email },
+        select: ['id', 'email', 'password'],
+      });
 
-    const res = await this.findOne({
-      where: { email },
-      select: ['id', 'email', 'password'],
-    });
-
-    return res;
+      return res;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async updateUser(id: number, body: UpdateUserDto) {
-    const res = await this.createQueryBuilder()
-      .update('user')
-      .set(body)
-      .where('id = :id', { id })
-      .execute();
+    try {
+      const res = await this.createQueryBuilder()
+        .update('user')
+        .set(body)
+        .where('id = :id', { id })
+        .execute();
 
-    return id;
+      return id;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async removeUser(id: number) {
-    const res = await this.softDelete({ id });
+    try {
+      const res = await this.softDelete({ id });
 
-    return id;
+      return id;
+    } catch (e: any) {
+      throw new InternalServerErrorException();
+    }
   }
 }

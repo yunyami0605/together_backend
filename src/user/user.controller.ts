@@ -15,11 +15,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user api')
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: 'user create api', description: 'create user' })
   @Get('/list')
   findList(@Query('page') page: string) {
     return this.userService.findList(+page);
@@ -30,20 +33,9 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  // @UseGuards(LocalAuthGuard)
-  // @Post('/login')
-  // // login(@Body() body: LoginUserDto) {
-  // //   return this.authService.login(body);
-  // // }
-  // login(@Request() req) {
-  //   console.log(req.user);
-  //   return this.userService.login(req.user);
-  // }
-
   @Post()
   create(@Body() body: CreateUserDto) {
     return this.userService.create(body);
-    // return this.userService.findEmail(createUserDto.email);
   }
 
   @Patch(':id')
