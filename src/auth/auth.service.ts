@@ -39,7 +39,11 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
 
     const token = this.jwtService.sign(payload);
-    const cookie = `auth=${token}; HttpOnly; Path=/; Max-Age=${3600}`;
+
+    // # httpOnly 부분 해결법 생각해보기
+    const cookie = `toat=${token}; ${
+      process.env.NODE_ENV !== 'production' ? '' : 'HttpOnly;'
+    }secure; samesite=lax; Path=/; Max-Age=${3600}`;
 
     res.setHeader('Set-Cookie', cookie);
 

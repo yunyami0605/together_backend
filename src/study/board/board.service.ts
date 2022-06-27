@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from 'src/user/user.service';
 // import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -10,7 +11,10 @@ import { StudyBoardRepository } from './repository/board.repository';
 
 @Injectable()
 export class BoardService {
-  constructor(private readonly studyBoardRepo: StudyBoardRepository) {}
+  constructor(
+    private readonly studyBoardRepo: StudyBoardRepository,
+    private readonly userSerivce: UserService,
+  ) {}
 
   findList(page: number) {
     const countInPage = 10;
@@ -22,14 +26,24 @@ export class BoardService {
     const boardData = await this.studyBoardRepo.findBoard(id);
 
     if (boardData) {
-      return this.studyBoardRepo.increaseBoardView(boardData);
+      const userInfo = await this.userSerivce.findOne(boardData.authorId);
+      this.studyBoardRepo.increaseBoardView(boardData);
+      return {
+        ...boardData,
+        view: boardData.view + 1,
+        author: userInfo.nickname,
+      };
     } else {
       throw new NotFoundException();
     }
   }
 
-  create(body: CreateBoardDto): Promise<StudyBoardEntity> {
-    return this.studyBoardRepo.createBoard(body);
+  setFavorite(id: number, isFavorite: number) {
+    return this.studyBoardRepo.setBoardFavorite(id, isFavorite);
+  }
+
+  async create(body: CreateBoardDto, authorId: any): Promise<StudyBoardEntity> {
+    return this.studyBoardRepo.createBoard(body, authorId);
   }
 
   update(id: number, body: UpdateBoardDto) {

@@ -25,7 +25,13 @@ export class BoardController {
     private readonly userService: UserService,
   ) {}
 
-  @Header('Custom', 'Test Header')
+  @Get('/favorite')
+  setFavorite(@Query() query: { id: string; favorite: string }) {
+    const { id, favorite } = query;
+    return this.boardService.setFavorite(+id, +favorite);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('/list')
   async findList(@Query('page') page: string) {
     const res = await this.userService.findOne(1);
@@ -33,15 +39,18 @@ export class BoardController {
     return this.boardService.findList(+page);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string, @Req() req) {
+    console.log('@ FIND ONE');
+
     return this.boardService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() body: CreateBoardDto) {
-    return this.boardService.create(body);
+  create(@Body() body: CreateBoardDto, @Req() req) {
+    return this.boardService.create(body, req.user.userId);
   }
 
   @Patch(':id')

@@ -36,9 +36,20 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('datetime', { name: 'period' })
   period: string;
 
-  @Column('int', { name: 'view' })
+  @Column('int', { name: 'view', default: 0, nullable: false })
   view: number;
 
+  @Column('int', { name: 'favorite', default: 0 })
+  favorite: number;
+
+  @Column('int', { name: 'likeCount', default: 0 })
+  like: number;
+
+  @Column('int', { name: 'dislikeCount', default: 0 })
+  dislike: number;
+
+  @Column('int', { name: 'authorId', nullable: false })
+  authorId: number;
   // @Column('varchar', { name: 'tag_list' })
   // tagList: string[];
 

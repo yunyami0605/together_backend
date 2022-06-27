@@ -1,6 +1,10 @@
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { TryCatch } from 'src/decorator/exceptrionDecorator';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, In, Repository } from 'typeorm';
 import { CreateBoardDto } from '../dto/create-board.dto';
 import { UpdateBoardDto } from '../dto/update-board.dto';
 import { StudyBoardEntity } from '../entity/board.entity';
@@ -8,7 +12,10 @@ import { StudyBoardEntity } from '../entity/board.entity';
 @EntityRepository(StudyBoardEntity)
 export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   // create board
-  async createBoard(createBoardDto: CreateBoardDto): Promise<StudyBoardEntity> {
+  async createBoard(
+    createBoardDto: CreateBoardDto,
+    authorId: any,
+  ): Promise<StudyBoardEntity> {
     const { title, content, type, location, persons, period } = createBoardDto;
     const board = this.create({
       title,
@@ -17,6 +24,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
       location,
       persons,
       period,
+      authorId: Number(authorId),
       // status: 'PUBLIC',
     });
     await this.save(board);
@@ -52,6 +60,10 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     }
   }
 
+  /**
+   *@description : increase view count on board table
+   *@param {StudyBoardEntity} boardData - study board entity
+   */
   async increaseBoardView(boardData: StudyBoardEntity) {
     try {
       boardData.view += 1;
@@ -64,6 +76,33 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     }
   }
 
+  /**
+   *@description : set favorite column on study board table
+   *@param {number} id - study board entity
+   */
+  async setBoardFavorite(id: number, isFavorite: number) {
+    try {
+      const board = await this.findBoard(id);
+
+      if (board) {
+        board.favorite += isFavorite === 0 ? -1 : 1;
+
+        if (board.favorite < 0) board.favorite = 0;
+
+        this.save(board);
+        return board.favorite;
+      } else {
+        throw new HttpException('Not Access Board ', 403);
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  /**
+   *@description
+   *@param {}  -
+   */
   async updateBoard(id: number, body: UpdateBoardDto) {
     const res = await this.createQueryBuilder()
       .update('studyBoard')
