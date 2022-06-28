@@ -14,7 +14,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   // create board
   async createBoard(
     createBoardDto: CreateBoardDto,
-    authorId: any,
+    authorId: number,
   ): Promise<StudyBoardEntity> {
     const { title, content, type, location, persons, period } = createBoardDto;
     const board = this.create({
@@ -24,7 +24,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
       location,
       persons,
       period,
-      authorId: Number(authorId),
+      author: Number(authorId),
       // status: 'PUBLIC',
     });
     await this.save(board);
@@ -33,7 +33,21 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
 
   async findBoardList(page: number, countInPage: number) {
     try {
-      const [list, count] = await this.createQueryBuilder('studyBoard')
+      const [list, count] = await this.createQueryBuilder('b')
+        .select([
+          'b.id',
+          'b.title',
+          'b.location',
+          'b.persons',
+          'b.period',
+          'b.view',
+          'b.favorite',
+          'b.like',
+          'b.dislike',
+          'b.createdAt',
+          'u.nickname',
+        ])
+        .leftJoin('b.author', 'u')
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
         .getManyAndCount();
@@ -52,10 +66,29 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
 
   async findBoard(id: number) {
     try {
-      const res = await this.findOne({ where: { id } });
+      const res = await this.createQueryBuilder('b')
+        .select([
+          'b.id',
+          'b.title',
+          'b.content',
+          'b.type',
+          'b.location',
+          'b.persons',
+          'b.period',
+          'b.view',
+          'b.favorite',
+          'b.like',
+          'b.dislike',
+          'b.createdAt',
+          'u.nickname',
+        ])
+        .leftJoin('b.author', 'u')
+        .where('b.id = :id', { id })
+        .getOne();
 
       return res;
     } catch (e: any) {
+      console.log(e);
       throw new InternalServerErrorException();
     }
   }

@@ -20,6 +20,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 // import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { ExampleMiddleware } from './middleware/example.middleware';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ExampleMiddleware } from './middleware/example.middleware';
     }),
     UserModule,
     AuthModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [

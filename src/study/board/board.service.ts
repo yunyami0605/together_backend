@@ -26,12 +26,10 @@ export class BoardService {
     const boardData = await this.studyBoardRepo.findBoard(id);
 
     if (boardData) {
-      const userInfo = await this.userSerivce.findOne(boardData.authorId);
       this.studyBoardRepo.increaseBoardView(boardData);
       return {
         ...boardData,
         view: boardData.view + 1,
-        author: userInfo.nickname,
       };
     } else {
       throw new NotFoundException();
@@ -42,7 +40,10 @@ export class BoardService {
     return this.studyBoardRepo.setBoardFavorite(id, isFavorite);
   }
 
-  async create(body: CreateBoardDto, authorId: any): Promise<StudyBoardEntity> {
+  async create(
+    body: CreateBoardDto,
+    authorId: number,
+  ): Promise<StudyBoardEntity> {
     return this.studyBoardRepo.createBoard(body, authorId);
   }
 

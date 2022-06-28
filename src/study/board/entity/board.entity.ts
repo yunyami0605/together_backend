@@ -1,3 +1,5 @@
+import { CommentEntity } from 'src/comment/entities/comment.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import {
   BaseEntity,
   Column,
@@ -48,10 +50,19 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('int', { name: 'dislikeCount', default: 0 })
   dislike: number;
 
-  @Column('int', { name: 'authorId', nullable: false })
-  authorId: number;
+  @ManyToOne(() => UserEntity, (users) => users.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  // JoinColume의 name은 db column과 일치
+  @JoinColumn({ name: 'authorId' })
+  // @Column('int', { name: 'authorId', nullable: false })
+  author: number;
   // @Column('varchar', { name: 'tag_list' })
   // tagList: string[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.boardId)
+  comment: CommentEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

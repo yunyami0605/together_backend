@@ -1,9 +1,12 @@
+import { CommentEntity } from 'src/comment/entities/comment.entity';
+import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -30,4 +33,10 @@ export class UserEntity extends BaseEntity {
 
   @DeleteDateColumn()
   deletedAt?: Date | null;
+
+  @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.author)
+  studyBoard: StudyBoardEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.writer)
+  comment: CommentEntity[];
 }

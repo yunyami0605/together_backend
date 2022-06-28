@@ -25,6 +25,7 @@ export class BoardController {
     private readonly userService: UserService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   setFavorite(@Query() query: { id: string; favorite: string }) {
     const { id, favorite } = query;
@@ -42,8 +43,6 @@ export class BoardController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
-    console.log('@ FIND ONE');
-
     return this.boardService.findOne(+id);
   }
 
@@ -53,11 +52,13 @@ export class BoardController {
     return this.boardService.create(body, req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() body: UpdateBoardDto) {
     return this.boardService.update(+id, body);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.boardService.remove(+id);
