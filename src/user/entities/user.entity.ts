@@ -37,6 +37,6 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.author)
   studyBoard: StudyBoardEntity[];
 
-  @OneToMany(() => CommentEntity, (comment) => comment.writer)
+  @OneToMany(() => CommentEntity, (comment) => comment.writerId)
   comment: CommentEntity[];
 }

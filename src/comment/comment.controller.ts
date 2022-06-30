@@ -6,7 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Query,
+  UseGuards,
+  Logger,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -15,14 +20,18 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  create(@Body() body: CreateCommentDto, @Req() req) {
+    const logger = new Logger();
+
+    logger.debug('tet');
+    return this.commentService.create(body, req.user.userId);
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
+  findAll(@Query('page') page) {
+    return this.commentService.findAll(+page);
   }
 
   @Get(':id')

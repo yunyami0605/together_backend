@@ -27,12 +27,18 @@ export class CommentEntity extends BaseEntity {
   @Column('varchar', { name: 'content', length: 255, nullable: false })
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'writerId' })
-  writer: number;
+  writerId: number;
 
-  @ManyToOne(() => StudyBoardEntity, (board) => board.id)
-  @Column('int', { name: 'boardId' })
+  @ManyToOne(() => StudyBoardEntity, (board) => board.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'boardId' })
   boardId: number;
 
   @CreateDateColumn()
@@ -42,5 +48,5 @@ export class CommentEntity extends BaseEntity {
   updatedAt: Date;
 
   @DeleteDateColumn()
-  deleteAt: Date | null;
+  deletedAt: Date | null;
 }

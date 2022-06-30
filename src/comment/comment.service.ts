@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CommentRepository } from './comment.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(private readonly commentRepo: CommentRepository) {}
+
+  create(body: CreateCommentDto, writerId: number) {
+    return this.commentRepo.createComment(body, writerId);
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  findAll(page: number) {
+    const countInPage = 4;
+    return this.commentRepo.getCommentList(page, countInPage);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} comment`;
+    return this.commentRepo.getComment(id);
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+    return this.commentRepo.updateComment(id, updateCommentDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} comment`;
+    return this.commentRepo.removeComment(id);
   }
 }
