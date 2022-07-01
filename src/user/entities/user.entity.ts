@@ -34,7 +34,7 @@ export class UserEntity extends BaseEntity {
   @DeleteDateColumn()
   deletedAt?: Date | null;
 
-  @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.author)
+  @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.writer)
   studyBoard: StudyBoardEntity[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.writerId)

@@ -12,6 +12,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { QueryResult } from 'typeorm';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -29,9 +30,9 @@ export class CommentController {
     return this.commentService.create(body, req.user.userId);
   }
 
-  @Get()
-  findAll(@Query('page') page) {
-    return this.commentService.findAll(+page);
+  @Get('/list')
+  findAll(@Query() query: { boardId: string; page: string }) {
+    return this.commentService.findAll(+query.boardId, +query.page);
   }
 
   @Get(':id')

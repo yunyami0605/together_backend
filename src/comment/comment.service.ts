@@ -12,9 +12,9 @@ export class CommentService {
     return this.commentRepo.createComment(body, writerId);
   }
 
-  findAll(page: number) {
+  findAll(boardId: number, page: number) {
     const countInPage = 4;
-    return this.commentRepo.getCommentList(page, countInPage);
+    return this.commentRepo.getCommentList(boardId, page, countInPage);
   }
 
   findOne(id: number) {

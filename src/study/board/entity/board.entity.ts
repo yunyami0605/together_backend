@@ -55,9 +55,9 @@ export class StudyBoardEntity extends BaseEntity {
     onUpdate: 'CASCADE',
   })
   // JoinColume의 name은 db column과 일치
-  @JoinColumn({ name: 'authorId' })
+  @JoinColumn({ name: 'writerId' })
   // @Column('int', { name: 'authorId', nullable: false })
-  author: number;
+  writer: number;
   // @Column('varchar', { name: 'tag_list' })
   // tagList: string[];
 

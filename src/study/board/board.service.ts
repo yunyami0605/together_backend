@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CommentRepository } from 'src/comment/comment.repository';
 import { UserService } from 'src/user/user.service';
 // import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +15,7 @@ export class BoardService {
   constructor(
     private readonly studyBoardRepo: StudyBoardRepository,
     private readonly userSerivce: UserService,
+    private readonly commentRepo: CommentRepository,
   ) {}
 
   findList(page: number) {
@@ -24,12 +26,14 @@ export class BoardService {
 
   async findOne(id: number) {
     const boardData = await this.studyBoardRepo.findBoard(id);
+    const commentData = await this.commentRepo.getCommentList(id, 1, 4);
 
     if (boardData) {
       this.studyBoardRepo.increaseBoardView(boardData);
       return {
         ...boardData,
         view: boardData.view + 1,
+        comment: commentData || [],
       };
     } else {
       throw new NotFoundException();
@@ -42,9 +46,9 @@ export class BoardService {
 
   async create(
     body: CreateBoardDto,
-    authorId: number,
+    writerId: number,
   ): Promise<StudyBoardEntity> {
-    return this.studyBoardRepo.createBoard(body, authorId);
+    return this.studyBoardRepo.createBoard(body, writerId);
   }
 
   update(id: number, body: UpdateBoardDto) {

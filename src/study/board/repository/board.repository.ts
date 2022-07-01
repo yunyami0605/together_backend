@@ -14,7 +14,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   // create board
   async createBoard(
     createBoardDto: CreateBoardDto,
-    authorId: number,
+    writerId: number,
   ): Promise<StudyBoardEntity> {
     const { title, content, type, location, persons, period } = createBoardDto;
     const board = this.create({
@@ -24,7 +24,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
       location,
       persons,
       period,
-      author: Number(authorId),
+      writer: Number(writerId),
       // status: 'PUBLIC',
     });
     await this.save(board);
@@ -47,7 +47,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.createdAt',
           'u.nickname',
         ])
-        .leftJoin('b.author', 'u')
+        .leftJoin('b.writer', 'u')
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
         .getManyAndCount();
@@ -82,14 +82,15 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.createdAt',
           'u.nickname',
         ])
-        .leftJoin('b.author', 'u')
+        .leftJoin('b.writer', 'u')
         .where('b.id = :id', { id })
         .getOne();
 
+      console.log(res);
       return res;
     } catch (e: any) {
       console.log(e);
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 

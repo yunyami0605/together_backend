@@ -6,10 +6,11 @@ import { BoardService } from './board.service';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { UserRepository } from 'src/user/user.repository';
+import { CommentRepository } from 'src/comment/comment.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudyBoardRepository]),
+    TypeOrmModule.forFeature([StudyBoardRepository, CommentRepository]),
     TypeOrmModule.forFeature([UserRepository]),
   ],
   controllers: [BoardController],

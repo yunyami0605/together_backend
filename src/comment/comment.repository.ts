@@ -17,6 +17,9 @@ export class CommentRepository extends Repository<CommentEntity> {
   async createComment(body: CreateCommentDto, writerId: number) {
     try {
       const { content, boardId } = body;
+      console.log('@@ CREATE comment');
+      console.log(boardId);
+      console.log(typeof boardId);
 
       const comment = this.create({ content, boardId, writerId });
 
@@ -34,19 +37,22 @@ export class CommentRepository extends Repository<CommentEntity> {
    *@param {number} page - list page
    *@param {number} countInPage - per page on list
    */
-  async getCommentList(page: number, countInPage: number) {
+  async getCommentList(boardId: number, page: number, countInPage: number) {
     try {
       const [list, count] = await this.createQueryBuilder()
+        .where('boardId = :boardId', { boardId })
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
         .getManyAndCount();
+
+      const lastPage = Math.ceil(count / countInPage);
 
       return {
         list,
         total: count,
         curPage: page,
         perPage: countInPage,
-        lastPage: Math.ceil(count / countInPage),
+        lastPage: lastPage || 1,
       };
     } catch (e: any) {
       throw new InternalServerErrorException();
@@ -59,13 +65,27 @@ export class CommentRepository extends Repository<CommentEntity> {
    */
   async getComment(id: number) {
     try {
-      const res = await this.createQueryBuilder('b')
-        .where('b.id = :id', { id })
+      // const res = await this.createQueryBuilder('b')
+      //   .where('b.id = :id', { id })
+      //   .getOne();
+
+      /*
+      .createQueryBuilder('user')
+      .innerJoin('user.WorkspaceMembers', 'members')
+      .innerJoin('members.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .getMany();
+      */
+      const res = await this.createQueryBuilder('c')
+        .select(['c.id', 'c.content'])
+        // .leftJoin('c.boardId', 'b')
+        .where('c.id = :id', { id })
         .getOne();
 
       return res;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 

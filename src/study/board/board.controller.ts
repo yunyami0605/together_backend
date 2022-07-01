@@ -35,8 +35,6 @@ export class BoardController {
   @UseGuards(JwtAuthGuard)
   @Get('/list')
   async findList(@Query('page') page: string) {
-    const res = await this.userService.findOne(1);
-
     return this.boardService.findList(+page);
   }
 
