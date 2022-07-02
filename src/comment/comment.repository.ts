@@ -39,10 +39,11 @@ export class CommentRepository extends Repository<CommentEntity> {
    */
   async getCommentList(boardId: number, page: number, countInPage: number) {
     try {
-      const [list, count] = await this.createQueryBuilder()
-        .where('boardId = :boardId', { boardId })
-        .offset((page - 1) * countInPage)
+      const [list, count] = await this.createQueryBuilder('m')
+        .where('m.boardId = :boardId', { boardId })
+        // .offset((page - 1) * countInPage)
         .limit(page * countInPage)
+        .orderBy('m.createdAt', 'DESC')
         .getManyAndCount();
 
       const lastPage = Math.ceil(count / countInPage);

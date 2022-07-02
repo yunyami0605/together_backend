@@ -8,11 +8,23 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 // import { Logger } from 'nestjs-pino';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+    // cors: true,
+  });
 
   app.enableCors({
     credentials: true,
+    // origin: true,
     origin: ['http://localhost:4000'],
+    // origin: '*',
+    // allowedHeaders: 'authorization, content-type, access-control-allow-origin',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // preflightContinue: false,
+    // optionsSuccessStatus: 204,
+    // allowedHeaders: '*',
+    // allowedHeaders:
+    //   'authorization, Content-Type, Accept, access-control-allow-origin access-control-allow-methods',
   });
 
   app.useGlobalFilters(new HttpExceptionFilter());

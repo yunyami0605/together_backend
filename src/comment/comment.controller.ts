@@ -10,6 +10,8 @@ import {
   Query,
   UseGuards,
   Logger,
+  Header,
+  Put,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { QueryResult } from 'typeorm';
@@ -41,7 +43,10 @@ export class CommentController {
   }
 
   @Patch(':id')
+  // @Put(':id')
   update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
+    console.log(id);
+    // return 1;
     return this.commentService.update(+id, updateCommentDto);
   }
 
