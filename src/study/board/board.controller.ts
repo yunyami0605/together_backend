@@ -32,13 +32,11 @@ export class BoardController {
     return this.boardService.setFavorite(+id, +favorite);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/list')
   async findList(@Query('page') page: string) {
     return this.boardService.findList(+page);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.boardService.findOne(+id);
