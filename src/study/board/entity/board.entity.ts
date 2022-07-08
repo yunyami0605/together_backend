@@ -29,13 +29,19 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('varchar', { name: 'type' })
   type: string;
 
+  @Column({
+    type: 'json',
+    nullable: true,
+  })
+  tagList: string[];
+
   @Column('varchar', { name: 'location' })
   location: string;
 
   @Column('int', { name: 'persons' })
   persons: number;
 
-  @Column('datetime', { name: 'period' })
+  @Column('varchar', { name: 'period', length: 8 })
   period: string;
 
   @Column('int', { name: 'view', default: 0, nullable: false })
@@ -56,10 +62,7 @@ export class StudyBoardEntity extends BaseEntity {
   })
   // JoinColume의 name은 db column과 일치
   @JoinColumn({ name: 'writerId' })
-  // @Column('int', { name: 'authorId', nullable: false })
   writer: number;
-  // @Column('varchar', { name: 'tag_list' })
-  // tagList: string[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.boardId)
   comment: CommentEntity[];

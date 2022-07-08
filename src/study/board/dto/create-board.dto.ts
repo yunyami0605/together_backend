@@ -16,11 +16,12 @@ export class CreateBoardDto {
   persons: number;
 
   @IsDateString()
+  @Length(8)
   period: string;
 
   @IsOptional()
   @IsArray()
-  tagList: string;
+  tagList: string[];
 
   @Length(4, 40)
   title: string;

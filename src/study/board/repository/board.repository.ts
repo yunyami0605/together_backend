@@ -16,7 +16,10 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     createBoardDto: CreateBoardDto,
     writerId: number,
   ): Promise<StudyBoardEntity> {
-    const { title, content, type, location, persons, period } = createBoardDto;
+    const { title, content, type, location, persons, period, tagList } =
+      createBoardDto;
+
+    console.log(period);
     const board = this.create({
       title,
       content,
@@ -24,6 +27,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
       location,
       persons,
       period,
+      tagList,
       writer: Number(writerId),
       // status: 'PUBLIC',
     });
@@ -45,9 +49,14 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.like',
           'b.dislike',
           'b.createdAt',
+          'b.tagList',
+          'c',
           'u.nickname',
+          // 'SUM(c)',
         ])
+        // .addSelect('SUM(c)', 'commentCount')
         .leftJoin('b.writer', 'u')
+        .leftJoin('b.comment', 'c')
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
         .getManyAndCount();
@@ -60,7 +69,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         lastPage: Math.ceil(count / countInPage),
       };
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -80,6 +89,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.like',
           'b.dislike',
           'b.createdAt',
+          'b.tagList',
           'u.nickname',
         ])
         .leftJoin('b.writer', 'u')
