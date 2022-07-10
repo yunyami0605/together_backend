@@ -57,7 +57,7 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.boardService.remove(+id);
+  remove(@Param('id') id: string, @Req() req) {
+    return this.boardService.remove(+id, req?.user?.userId);
   }
 }

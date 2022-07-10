@@ -5,11 +5,16 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  IsString,
   Length,
 } from 'class-validator';
+import { UpdateBoardDto } from './update-board.dto';
 
 export class CreateBoardDto {
+  @IsString()
   type: string;
+
+  @IsString()
   location: string;
 
   @IsNumber()
@@ -23,9 +28,11 @@ export class CreateBoardDto {
   @IsArray()
   tagList: string[];
 
+  @IsString()
   @Length(4, 40)
   title: string;
 
-  @Length(10, 1000)
+  @IsString()
+  @Length(10, 255)
   content: string;
 }

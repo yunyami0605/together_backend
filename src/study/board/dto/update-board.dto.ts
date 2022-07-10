@@ -1,4 +1,11 @@
-import { IsOptional, Length } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class UpdateBoardDto {
   @IsOptional()
@@ -6,6 +13,20 @@ export class UpdateBoardDto {
   title: string;
 
   @IsOptional()
-  @Length(1, 200)
+  @Length(10, 255)
   content: string;
+
+  @IsNumber()
+  persons: number;
+
+  @IsDateString()
+  @Length(8)
+  period: string;
+
+  @IsOptional()
+  @IsArray()
+  tagList: string[];
+
+  @IsString()
+  location: string;
 }

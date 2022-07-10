@@ -90,6 +90,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.dislike',
           'b.createdAt',
           'b.tagList',
+          'b.writer',
+
+          'u.id',
           'u.nickname',
         ])
         .leftJoin('b.writer', 'u')
@@ -97,6 +100,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         .getOne();
 
       console.log(res);
+
       return res;
     } catch (e: any) {
       console.log(e);
@@ -148,18 +152,26 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
    *@param {}  -
    */
   async updateBoard(id: number, body: UpdateBoardDto) {
-    const res = await this.createQueryBuilder()
-      .update('studyBoard')
-      .set(body)
-      .where('id = :id', { id })
-      .execute();
+    try {
+      const res = await this.createQueryBuilder()
+        .update('studyBoard')
+        .set(body)
+        .where('id = :id', { id })
+        .execute();
 
-    return id;
+      return id;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async removeBoard(id: number) {
-    const res = await this.softDelete({ id });
+    try {
+      await this.softDelete({ id });
 
-    return id;
+      return id;
+    } catch (error) {
+      return error;
+    }
   }
 }

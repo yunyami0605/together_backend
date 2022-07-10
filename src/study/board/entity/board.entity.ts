@@ -23,7 +23,7 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('varchar', { name: 'title', length: 40 })
   title: string;
 
-  @Column('varchar', { name: 'content', length: 1000 })
+  @Column('varchar', { name: 'content', length: 255 })
   content: string;
 
   @Column('varchar', { name: 'type' })
