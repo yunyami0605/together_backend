@@ -11,8 +11,8 @@ import {
 import { UpdateBoardDto } from './update-board.dto';
 
 export class CreateBoardDto {
-  @IsString()
-  type: string;
+  @IsNumber()
+  type: number;
 
   @IsString()
   location: string;

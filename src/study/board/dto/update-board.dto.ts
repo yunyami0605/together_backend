@@ -12,6 +12,9 @@ export class UpdateBoardDto {
   @Length(4, 40)
   title: string;
 
+  @IsNumber()
+  type: number;
+
   @IsOptional()
   @Length(10, 255)
   content: string;

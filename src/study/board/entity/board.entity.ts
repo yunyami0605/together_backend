@@ -26,8 +26,8 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('varchar', { name: 'content', length: 255 })
   content: string;
 
-  @Column('varchar', { name: 'type' })
-  type: string;
+  @Column('int', { name: 'type', nullable: false, default: 1 })
+  type: number;
 
   @Column({
     type: 'json',
