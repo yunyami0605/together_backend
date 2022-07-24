@@ -8,14 +8,25 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { UpdateBoardDto } from './update-board.dto';
 
 export class CreateBoardDto {
   @IsNumber()
-  type: number;
+  contentType1: number;
 
-  @IsString()
-  location: string;
+  @IsNumber()
+  contentType2: number;
+
+  @IsNumber()
+  togetherType: number;
+
+  @IsNumber()
+  location1: number;
+
+  @IsNumber()
+  location2: number;
+
+  @IsNumber()
+  location3: number;
 
   @IsNumber()
   persons: number;
@@ -33,6 +44,6 @@ export class CreateBoardDto {
   title: string;
 
   @IsString()
-  @Length(10, 255)
+  @Length(10, 255, { message: 'length is not valid' })
   content: string;
 }

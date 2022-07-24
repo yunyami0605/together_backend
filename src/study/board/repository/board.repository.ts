@@ -6,6 +6,7 @@ import {
 import { TryCatch } from 'src/decorator/exceptrionDecorator';
 import { EntityRepository, In, Repository } from 'typeorm';
 import { CreateBoardDto } from '../dto/create-board.dto';
+import { GetBoardListDto } from '../dto/get-boardList.dto';
 import { UpdateBoardDto } from '../dto/update-board.dto';
 import { StudyBoardEntity } from '../entity/board.entity';
 
@@ -16,32 +17,65 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     createBoardDto: CreateBoardDto,
     writerId: number,
   ): Promise<StudyBoardEntity> {
-    const { title, content, type, location, persons, period, tagList } =
-      createBoardDto;
+    try {
+      const {
+        title,
+        content,
+        togetherType,
+        contentType1,
+        contentType2,
+        location1,
+        location2,
+        location3,
+        persons,
+        period,
+        tagList,
+      } = createBoardDto;
 
-    console.log(period);
-    const board = this.create({
-      title,
-      content,
-      type,
-      location,
-      persons,
-      period,
-      tagList,
-      writer: Number(writerId),
-      // status: 'PUBLIC',
-    });
-    await this.save(board);
-    return board;
+      const board = this.create({
+        title,
+        content,
+        // togetherType,
+        contentType1,
+        contentType2,
+
+        location1,
+        location2,
+        location3,
+        persons,
+        period,
+        tagList,
+        writer: Number(writerId),
+
+        // status: 'PUBLIC',
+      });
+      await this.save(board);
+      return board;
+    } catch (e: any) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
-  async findBoardList(page: number, countInPage: number) {
+  // @ query type 변환시키기
+  async findBoardList(query: GetBoardListDto, countInPage: number) {
     try {
+      const {
+        page,
+        location1,
+        location2,
+        location3,
+        contentType1,
+        contentType2,
+      } = query;
       const [list, count] = await this.createQueryBuilder('b')
         .select([
           'b.id',
           'b.title',
-          'b.location',
+          'b.location1',
+          'b.location2',
+          'b.location3',
+          'b.contentType1',
+          'b.contentType2',
           'b.persons',
           'b.period',
           'b.view',
@@ -54,6 +88,24 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'u.nickname',
           // 'SUM(c)',
         ])
+        .where(location1 !== '0' ? 'b.location1 = :location1' : '', {
+          location1: Number(location1),
+        })
+        // .andWhere(location2 !== '0' ? 'b.location2 = :location2' : '', {
+        //   location2: Number(location2),
+        // })
+        // .andWhere(location3 !== '0' ? 'b.location3 = :location3' : '', {
+        //   location3: Number(location3),
+        // })
+        // .andWhere(
+        //   contentType1 !== '0' ? 'b.contentType1 = :contentType1' : '',
+        //   { contentType1: Number(contentType1) },
+        // )
+        // .andWhere(
+        //   contentType2 !== '0' ? 'b.contentType2 = :contentType2' : '',
+        //   { contentType2: Number(contentType2) },
+        // )
+        // .andWhere('b.contentType2 = :contentType2', { contentType2 })
         // .addSelect('SUM(c)', 'commentCount')
         .leftJoin('b.writer', 'u')
         .leftJoin('b.comment', 'c')
@@ -69,6 +121,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         lastPage: Math.ceil(count / countInPage),
       };
     } catch (e: any) {
+      console.log(e);
       throw new InternalServerErrorException(e);
     }
   }
@@ -80,8 +133,12 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.id',
           'b.title',
           'b.content',
-          'b.type',
-          'b.location',
+          'b.togetherType',
+          'b.contentType1',
+          'b.contentType2',
+          'b.location1',
+          'b.location2',
+          'b.location3',
           'b.persons',
           'b.period',
           'b.view',

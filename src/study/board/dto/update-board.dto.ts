@@ -13,7 +13,22 @@ export class UpdateBoardDto {
   title: string;
 
   @IsNumber()
-  type: number;
+  contentType1: number;
+
+  @IsNumber()
+  contentType2: number;
+
+  @IsNumber()
+  togetherType: number;
+
+  @IsNumber()
+  location1: number;
+
+  @IsNumber()
+  location2: number;
+
+  @IsNumber()
+  location3: number;
 
   @IsOptional()
   @Length(10, 255)

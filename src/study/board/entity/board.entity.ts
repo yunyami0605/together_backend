@@ -26,8 +26,14 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('varchar', { name: 'content', length: 255 })
   content: string;
 
-  @Column('int', { name: 'type', nullable: false, default: 1 })
-  type: number;
+  @Column('int', { name: 'togetherType', nullable: false, default: 1 })
+  togetherType: number;
+
+  @Column('int', { name: 'contentType1', nullable: false, default: 1 })
+  contentType1: number;
+
+  @Column('int', { name: 'contentType2', nullable: false, default: 0 })
+  contentType2: number;
 
   @Column({
     type: 'json',
@@ -35,8 +41,14 @@ export class StudyBoardEntity extends BaseEntity {
   })
   tagList: string[];
 
-  @Column('varchar', { name: 'location' })
-  location: string;
+  @Column('int', { name: 'location1', nullable: false, default: 0 })
+  location1: number;
+
+  @Column('int', { name: 'location2', default: 1 })
+  location2: number;
+
+  @Column('int', { name: 'location3', default: 0 })
+  location3: number;
 
   @Column('int', { name: 'persons' })
   persons: number;

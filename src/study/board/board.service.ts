@@ -1,14 +1,9 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CommentRepository } from 'src/comment/comment.repository';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-// import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
-import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+import { GetBoardListDto } from './dto/get-boardList.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { StudyBoardEntity } from './entity/board.entity';
 import { StudyBoardRepository } from './repository/board.repository';
 
 @Injectable()
@@ -19,10 +14,10 @@ export class BoardService {
     private readonly commentRepo: CommentRepository,
   ) {}
 
-  findList(page: number) {
+  findList(query: GetBoardListDto) {
     const countInPage = 10;
 
-    return this.studyBoardRepo.findBoardList(page, countInPage);
+    return this.studyBoardRepo.findBoardList(query, countInPage);
   }
 
   async findOne(id: number) {
@@ -45,15 +40,11 @@ export class BoardService {
     return this.studyBoardRepo.setBoardFavorite(id, isFavorite);
   }
 
-  async create(
-    body: CreateBoardDto,
-    writerId: number,
-  ): Promise<StudyBoardEntity> {
+  create(body: CreateBoardDto, writerId: number) {
     return this.studyBoardRepo.createBoard(body, writerId);
   }
 
   update(id: number, body: UpdateBoardDto) {
-    // return id;
     return this.studyBoardRepo.updateBoard(id, body);
   }
 

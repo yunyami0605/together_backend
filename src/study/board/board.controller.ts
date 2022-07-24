@@ -17,6 +17,7 @@ import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
+import { GetBoardListDto } from './dto/get-boardList.dto';
 
 @Controller('api/study/board')
 export class BoardController {
@@ -33,8 +34,8 @@ export class BoardController {
   }
 
   @Get('/list')
-  async findList(@Query('page') page: string) {
-    return this.boardService.findList(+page);
+  findList(@Query() query: GetBoardListDto) {
+    return this.boardService.findList(query);
   }
 
   @Get(':id')
@@ -45,7 +46,6 @@ export class BoardController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: CreateBoardDto, @Req() req) {
-    console.log(body);
     return this.boardService.create(body, req.user.userId);
   }
 
