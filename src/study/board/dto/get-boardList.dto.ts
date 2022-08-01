@@ -22,9 +22,12 @@ export class GetBoardListDto {
   contentType1: string;
 
   @IsOptional()
-  // @IsNumber()
   @IsString()
   contentType2: string;
+
+  @IsOptional()
+  @IsString()
+  searchTxt: string;
 
   @IsString()
   page: number;

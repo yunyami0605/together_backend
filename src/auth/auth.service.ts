@@ -1,5 +1,6 @@
 import {
   ForbiddenException,
+  HttpException,
   Injectable,
   Request,
   Response,
@@ -51,6 +52,22 @@ export class AuthService {
     return res.send({
       statusCode: 204,
       data: token,
+    });
+  }
+
+  async logout(@Response() res, id?: number) {
+    if (!id) throw new HttpException('Not Access Authorization ', 403);
+
+    // # httpOnly 부분 해결법 생각해보기
+    const cookie = `toat=; ${
+      process.env.NODE_ENV !== 'production' ? '' : 'HttpOnly;'
+    }secure; samesite=lax; Path=/; Max-Age=${0}`;
+
+    res.setHeader('Set-Cookie', cookie);
+
+    return res.send({
+      statusCode: 204,
+      data: '',
     });
   }
 }

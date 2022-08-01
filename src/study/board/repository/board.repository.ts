@@ -66,7 +66,17 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         location3,
         contentType1,
         contentType2,
+        searchTxt,
       } = query;
+
+      const locationWhereQueryObj = {
+        ...(location1 !== '0' && { location1 }),
+        ...(location2 !== '0' && { location2 }),
+        ...(location3 !== '0' && { location3 }),
+        ...(contentType1 !== '0' && { contentType1 }),
+        ...(contentType2 !== '0' && { contentType2 }),
+      };
+
       const [list, count] = await this.createQueryBuilder('b')
         .select([
           'b.id',
@@ -88,27 +98,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'u.nickname',
           // 'SUM(c)',
         ])
-        .where(location1 !== '0' ? 'b.location1 = :location1' : '', {
-          location1: Number(location1),
-        })
-        // .andWhere(location2 !== '0' ? 'b.location2 = :location2' : '', {
-        //   location2: Number(location2),
-        // })
-        // .andWhere(location3 !== '0' ? 'b.location3 = :location3' : '', {
-        //   location3: Number(location3),
-        // })
-        // .andWhere(
-        //   contentType1 !== '0' ? 'b.contentType1 = :contentType1' : '',
-        //   { contentType1: Number(contentType1) },
-        // )
-        // .andWhere(
-        //   contentType2 !== '0' ? 'b.contentType2 = :contentType2' : '',
-        //   { contentType2: Number(contentType2) },
-        // )
-        // .andWhere('b.contentType2 = :contentType2', { contentType2 })
-        // .addSelect('SUM(c)', 'commentCount')
         .leftJoin('b.writer', 'u')
         .leftJoin('b.comment', 'c')
+        .where(locationWhereQueryObj)
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
         .getManyAndCount();
