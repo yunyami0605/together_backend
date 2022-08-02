@@ -21,11 +21,21 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 import { AuthModule } from './auth/auth.module';
 import { ExampleMiddleware } from './middleware/example.middleware';
 import { CommentModule } from './comment/comment.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     StudyModule,
     ConfigModule.forRoot(),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', '..', 'files'),
+    // }),
+
+    // ServeStaticModule.forRoot({
+    //   serveRoot: '/path1',
+    //   rootPath: `/var/lib/app/data1`,
+    // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DATABASE_URL,
