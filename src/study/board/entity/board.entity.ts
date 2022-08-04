@@ -68,6 +68,9 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('int', { name: 'dislikeCount', default: 0 })
   dislike: number;
 
+  @Column('varchar', { name: 'imgPath', default: null })
+  imgPath: string;
+
   @ManyToOne(() => UserEntity, (users) => users.id, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',

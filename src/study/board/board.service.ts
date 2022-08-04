@@ -36,12 +36,16 @@ export class BoardService {
     }
   }
 
+  uploadFile(file: Express.Multer.File, id: number) {
+    return this.studyBoardRepo.uploadFile(file, id);
+  }
+
   setFavorite(id: number, isFavorite: number) {
     return this.studyBoardRepo.setBoardFavorite(id, isFavorite);
   }
 
-  create(body: CreateBoardDto, writerId: number) {
-    return this.studyBoardRepo.createBoard(body, writerId);
+  create(body: CreateBoardDto, file: Express.Multer.File, writerId: number) {
+    return this.studyBoardRepo.createBoard(body, file, writerId);
   }
 
   update(id: number, body: UpdateBoardDto) {

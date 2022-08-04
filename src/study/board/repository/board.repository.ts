@@ -15,6 +15,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
   // create board
   async createBoard(
     createBoardDto: CreateBoardDto,
+    file: Express.Multer.File,
     writerId: number,
   ): Promise<StudyBoardEntity> {
     try {
@@ -46,11 +47,42 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         period,
         tagList,
         writer: Number(writerId),
-
+        imgPath: file.path,
         // status: 'PUBLIC',
       });
       await this.save(board);
       return board;
+    } catch (e: any) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async uploadFile(file: Express.Multer.File, id: number) {
+    try {
+      const res = await this.createQueryBuilder()
+        .update('studyBoard')
+        .set({
+          imgPath: file.path,
+        })
+        .where('id = :id', { id })
+        .execute();
+      /*
+      {
+        fieldname: 'image',
+        originalname: 'test.jpg',
+        encoding: '7bit',
+        mimetype: 'image/jpeg',
+        destination: 'files/',
+        filename: '8eb319948c840c7a55d8f1a6ff961cb6.jpg',
+        path: 'files\\8eb319948c840c7a55d8f1a6ff961cb6.jpg',
+        size: 68692
+      }
+      */
+
+      return {
+        filename: file.filename,
+        path: file.path,
+      };
     } catch (e: any) {
       throw new InternalServerErrorException(e);
     }
@@ -94,6 +126,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.dislike',
           'b.createdAt',
           'b.tagList',
+          'b.imgPath',
           'c',
           'u.nickname',
           // 'SUM(c)',

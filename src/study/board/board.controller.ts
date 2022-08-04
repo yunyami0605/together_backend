@@ -50,15 +50,19 @@ export class BoardController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
   @Post()
-  create(@Body() body: CreateBoardDto, @Req() req) {
-    return this.boardService.create(body, req.user.userId);
+  create(@Body() body, @UploadedFile() file: Express.Multer.File, @Req() req) {
+    return this.boardService.create(body, file, req.user.userId);
   }
 
   @UseInterceptors(FileInterceptor('image'))
-  @Post('/upload')
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    // console.log(file);
+  @Post(':id/upload')
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    return this.boardService.uploadFile(file, +id);
   }
 
   @UseGuards(JwtAuthGuard)

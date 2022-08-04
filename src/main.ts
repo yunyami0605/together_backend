@@ -17,8 +17,9 @@ async function bootstrap() {
   });
   //   app.setGlobalPrefix('api');
 
+  // # 폴더 경로 설정
   app.useStaticAssets(join(__dirname, '../..', 'files'), {
-    prefix: '/files',
+    prefix: '/api/files',
   });
 
   app.enableCors({
