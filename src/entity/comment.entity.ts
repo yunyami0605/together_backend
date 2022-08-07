@@ -1,5 +1,5 @@
-import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { StudyBoardEntity } from 'src/entity/board.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import {
   BaseEntity,
   Column,

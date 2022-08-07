@@ -8,7 +8,7 @@ import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity } from '../entity/user.entity';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -33,10 +33,17 @@ export class UserRepository extends Repository<UserEntity> {
   async findUser(id: number) {
     try {
       const res = await this.findOne({ where: { id } });
+      // const res = await this.createQueryBuilder('u')
+      // .select([
+      //   'u.id',
+      //   'u.email',
+      //   'u.nickname',
+
+      // ])
 
       return res;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -56,7 +63,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       return user;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -66,7 +73,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       return res;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -76,7 +83,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       return res;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -90,7 +97,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       return res;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -104,7 +111,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       return id;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
     }
   }
 
@@ -114,7 +121,23 @@ export class UserRepository extends Repository<UserEntity> {
 
       return id;
     } catch (e: any) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  async getBoardMember(boardId: number) {
+    try {
+      const result = await this.createQueryBuilder('u')
+        .select(['u.id', 'u.nickname'])
+        .innerJoin('u.boardMembers', 'members')
+        .innerJoin('members.boardId', 'board', 'board.id = :id', {
+          id: boardId,
+        })
+        .getMany();
+
+      return result;
+    } catch (e: any) {
+      throw new InternalServerErrorException(e);
     }
   }
 }

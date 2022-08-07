@@ -2,7 +2,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { CommentEntity } from './entities/comment.entity';
+import { CommentEntity } from '../entity/comment.entity';
 
 /**
  *@description : control comment db on repo

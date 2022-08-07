@@ -12,9 +12,9 @@ import { AppService } from './app.service';
 import { StudyModule } from './study/study.module';
 import { typeORMConfig } from '../ormconfig';
 import { BoardModule } from './study/board/board.module';
-import { StudyBoardEntity } from './study/board/entity/board.entity';
+import { StudyBoardEntity } from './entity/board.entity';
 import { UserModule } from './user/user.module';
-import { UserEntity } from './user/entities/user.entity';
+import { UserEntity } from './entity/user.entity';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 // import { WinstonModule } from 'nest-winston';
 // import { LoggerModule } from 'nestjs-pino';
@@ -23,6 +23,8 @@ import { ExampleMiddleware } from './middleware/example.middleware';
 import { CommentModule } from './comment/comment.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CommentEntity } from './entity/comment.entity';
+import { BoardMemberEntity } from './entity/boardMember.entity';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { join } from 'path';
         __dirname + '../**/*.entity.{js,ts}',
         StudyBoardEntity,
         UserEntity,
+        CommentEntity,
+        BoardMemberEntity,
       ],
       synchronize: false,
       autoLoadEntities: true,

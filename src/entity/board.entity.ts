@@ -1,5 +1,5 @@
-import { CommentEntity } from 'src/comment/entities/comment.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { CommentEntity } from 'src/entity/comment.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import {
   BaseEntity,
   Column,
@@ -8,12 +8,14 @@ import {
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { BoardMemberEntity } from './boardMember.entity';
 
 @Entity({ schema: 'together', name: 'studyBoard' })
 export class StudyBoardEntity extends BaseEntity {
@@ -71,13 +73,30 @@ export class StudyBoardEntity extends BaseEntity {
   @Column('varchar', { name: 'imgPath', default: null })
   imgPath: string;
 
-  @ManyToOne(() => UserEntity, (users) => users.id, {
+  @ManyToOne(() => UserEntity, (users) => users.studyBoard, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   // JoinColume의 name은 db column과 일치
-  @JoinColumn({ name: 'writerId' })
+  @JoinColumn({ name: 'writerId', referencedColumnName: 'id' })
   writer: number;
+
+  @OneToMany(() => BoardMemberEntity, (boardMember) => boardMember.boardId)
+  boardMembers: BoardMemberEntity[];
+
+  @ManyToMany(() => UserEntity, (user) => user.boards)
+  @JoinTable({
+    name: 'boardmember',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'boardId',
+      referencedColumnName: 'id',
+    },
+  })
+  members: UserEntity[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.boardId)
   comment: CommentEntity[];

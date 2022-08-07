@@ -6,7 +6,7 @@ import {
   Response,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BoardController } from './board.controller';
-import { StudyBoardRepository } from './repository/board.repository';
+import { StudyBoardRepository } from './board.repository';
 import { BoardService } from './board.service';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
@@ -12,10 +12,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { diskStorage } from 'multer';
 import * as fs from 'fs';
 import { extname } from 'path';
+import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudyBoardRepository, CommentRepository]),
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([
+      StudyBoardRepository,
+      CommentRepository,
+      BoardMemberRepository,
+      UserRepository,
+    ]),
     MulterModule.registerAsync({
       // imports: [ConfigModule],
       useFactory: async () => ({

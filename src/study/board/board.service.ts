@@ -4,25 +4,30 @@ import { UserService } from 'src/user/user.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { GetBoardListDto } from './dto/get-boardList.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { StudyBoardRepository } from './repository/board.repository';
+import { StudyBoardRepository } from './board.repository';
+import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class BoardService {
   constructor(
     private readonly studyBoardRepo: StudyBoardRepository,
-    private readonly userSerivce: UserService,
+    private readonly boardMemberRepo: BoardMemberRepository,
     private readonly commentRepo: CommentRepository,
+    private readonly usertRepo: UserRepository,
   ) {}
 
   findList(query: GetBoardListDto) {
     const countInPage = 10;
 
     return this.studyBoardRepo.findBoardList(query, countInPage);
+    // return this.studyBoardRepo.test();
   }
 
   async findOne(id: number) {
     const boardData = await this.studyBoardRepo.findBoard(id);
     const commentData = await this.commentRepo.getCommentList(id, 1, 4);
+    const memberList = await this.usertRepo.getBoardMember(id);
 
     if (boardData) {
       this.studyBoardRepo.increaseBoardView(boardData);
@@ -30,6 +35,7 @@ export class BoardService {
         ...boardData,
         view: boardData.view + 1,
         comment: commentData || [],
+        member: memberList,
       };
     } else {
       throw new NotFoundException();
@@ -44,8 +50,14 @@ export class BoardService {
     return this.studyBoardRepo.setBoardFavorite(id, isFavorite);
   }
 
-  create(body: CreateBoardDto, file: Express.Multer.File, writerId: number) {
-    return this.studyBoardRepo.createBoard(body, file, writerId);
+  async create(
+    body: CreateBoardDto,
+    file: Express.Multer.File,
+    writerId: number,
+  ) {
+    const boardId = await this.studyBoardRepo.createBoard(body, file, writerId);
+    this.boardMemberRepo.createBoardMember(boardId, writerId);
+    return boardId;
   }
 
   update(id: number, body: UpdateBoardDto) {
@@ -67,5 +79,9 @@ export class BoardService {
       throw new HttpException('No Board', 403);
     }
     return this.studyBoardRepo.removeBoard(id);
+  }
+
+  addBoardMember(boardId: number, userId: number) {
+    return this.boardMemberRepo.createBoardMember(boardId, userId);
   }
 }

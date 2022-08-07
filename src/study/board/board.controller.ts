@@ -76,4 +76,15 @@ export class BoardController {
   remove(@Param('id') id: string, @Req() req) {
     return this.boardService.remove(+id, req?.user?.userId);
   }
+
+  @Get('/count')
+  count(@Param('tmp') tmp: string) {
+    return Number(tmp) + 1;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/member/add')
+  addBoardMember(@Param('id') boardId, @Req() req) {
+    return this.boardService.addBoardMember(boardId, req.user.userId);
+  }
 }

@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { TryCatch } from 'src/decorator/exceptrionDecorator';
 import { EntityRepository, In, Like, Repository } from 'typeorm';
-import { CreateBoardDto } from '../dto/create-board.dto';
-import { GetBoardListDto } from '../dto/get-boardList.dto';
-import { UpdateBoardDto } from '../dto/update-board.dto';
-import { StudyBoardEntity } from '../entity/board.entity';
+import { CreateBoardDto } from './dto/create-board.dto';
+import { GetBoardListDto } from './dto/get-boardList.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
+import { StudyBoardEntity } from '../../entity/board.entity';
 
 @EntityRepository(StudyBoardEntity)
 export class StudyBoardRepository extends Repository<StudyBoardEntity> {
@@ -17,7 +17,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     createBoardDto: CreateBoardDto,
     file: Express.Multer.File,
     writerId: number,
-  ): Promise<StudyBoardEntity> {
+  ): Promise<number> {
     try {
       const {
         title,
@@ -51,7 +51,7 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         // status: 'PUBLIC',
       });
       await this.save(board);
-      return board;
+      return board.id;
     } catch (e: any) {
       throw new InternalServerErrorException(e);
     }
@@ -132,10 +132,12 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.imgPath',
           'c',
           'u.nickname',
+          // 'm',
           // 'SUM(c)',
         ])
         .leftJoin('b.writer', 'u')
         .leftJoin('b.comment', 'c')
+        // .leftJoin('b.members', 'm')
         .where(locationWhereQueryObj)
         .offset((page - 1) * countInPage)
         .limit(page * countInPage)
@@ -176,15 +178,12 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.createdAt',
           'b.tagList',
           'b.writer',
-
           'u.id',
           'u.nickname',
         ])
         .leftJoin('b.writer', 'u')
         .where('b.id = :id', { id })
         .getOne();
-
-      console.log(res);
 
       return res;
     } catch (e: any) {
@@ -258,5 +257,13 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     } catch (error) {
       return error;
     }
+  }
+
+  async test() {
+    const res = await this.createQueryBuilder('b')
+      .leftJoinAndSelect('b.members', 'test')
+      .getMany();
+
+    return;
   }
 }

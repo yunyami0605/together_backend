@@ -1,6 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 // import dotenv from 'dotenv';
-import { StudyBoardEntity } from 'src/study/board/entity/board.entity';
+import { StudyBoardEntity } from 'src/entity/board.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
