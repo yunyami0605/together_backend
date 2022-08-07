@@ -4,7 +4,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { TryCatch } from 'src/decorator/exceptrionDecorator';
-import { EntityRepository, In, Repository } from 'typeorm';
+import { EntityRepository, In, Like, Repository } from 'typeorm';
 import { CreateBoardDto } from '../dto/create-board.dto';
 import { GetBoardListDto } from '../dto/get-boardList.dto';
 import { UpdateBoardDto } from '../dto/update-board.dto';
@@ -101,12 +101,15 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         searchTxt,
       } = query;
 
+      const txt = decodeURIComponent(searchTxt);
+
       const locationWhereQueryObj = {
         ...(location1 !== '0' && { location1 }),
         ...(location2 !== '0' && { location2 }),
         ...(location3 !== '0' && { location3 }),
         ...(contentType1 !== '0' && { contentType1 }),
         ...(contentType2 !== '0' && { contentType2 }),
+        ...(txt !== '' && { title: Like(`%${txt}%`) }),
       };
 
       const [list, count] = await this.createQueryBuilder('b')
