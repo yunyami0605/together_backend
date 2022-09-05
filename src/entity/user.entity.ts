@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BoardMemberEntity } from './boardMember.entity';
+import { LikeEntity } from './like.entity';
 
 @Entity({ schema: 'together', name: 'user' })
 export class UserEntity extends BaseEntity {
@@ -41,6 +42,9 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => BoardMemberEntity, (boardMember) => boardMember.userId)
   boardMembers: BoardMemberEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.userId)
+  likes: LikeEntity[];
 
   @ManyToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.members)
   boards: StudyBoardEntity[];

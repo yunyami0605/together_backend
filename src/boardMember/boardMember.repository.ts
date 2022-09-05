@@ -22,8 +22,17 @@ export class BoardMemberRepository extends Repository<BoardMemberEntity> {
     }
   }
 
-  async addBoardMember(boardId: number, userId: number): Promise<number> {
-    //
-    return 1;
+  async removeBoardMember(boardId: number, userId: number): Promise<number> {
+    try {
+      const result = await this.createQueryBuilder('bm')
+        .delete()
+        .where({ boardId, userId })
+        .execute();
+
+      console.log(result);
+      return boardId;
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }

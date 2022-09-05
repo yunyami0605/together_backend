@@ -25,9 +25,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CommentEntity } from './entity/comment.entity';
 import { BoardMemberEntity } from './entity/boardMember.entity';
+import { LikeModule } from './like/like.module';
+import { LikeEntity } from './entity/like.entity';
+import { TmpImageEntity } from './entity/tmpImg.entity';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+
     StudyModule,
     ConfigModule.forRoot(),
     // ServeStaticModule.forRoot({
@@ -46,11 +52,14 @@ import { BoardMemberEntity } from './entity/boardMember.entity';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [
-        __dirname + '../**/*.entity.{js,ts}',
+        __dirname + '/../**/*.entity{.ts,.js}',
+        // __dirname + '/src/**/*.entity.{js,ts}',
         StudyBoardEntity,
         UserEntity,
         CommentEntity,
         BoardMemberEntity,
+        LikeEntity,
+        TmpImageEntity,
       ],
       synchronize: false,
       autoLoadEntities: true,
@@ -58,6 +67,7 @@ import { BoardMemberEntity } from './entity/boardMember.entity';
     UserModule,
     AuthModule,
     CommentModule,
+    LikeModule,
   ],
   controllers: [AppController],
   providers: [

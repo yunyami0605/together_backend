@@ -13,6 +13,7 @@ import { diskStorage } from 'multer';
 import * as fs from 'fs';
 import { extname } from 'path';
 import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
+import { TmpImgRepository } from 'src/tmpImg/TmpImg.repository';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -20,6 +21,7 @@ import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
       CommentRepository,
       BoardMemberRepository,
       UserRepository,
+      TmpImgRepository,
     ]),
     MulterModule.registerAsync({
       // imports: [ConfigModule],
@@ -31,7 +33,6 @@ import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
             // 요 부분을 원하는 데로 바꾸면 된다.
             const dest = `files/`;
             // const test = config?.get('DATABASE_URL');
-            // console.log(test);
             // console.log();
 
             if (!fs.existsSync(dest)) {

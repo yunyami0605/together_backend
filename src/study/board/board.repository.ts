@@ -258,12 +258,4 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
       return error;
     }
   }
-
-  async test() {
-    const res = await this.createQueryBuilder('b')
-      .leftJoinAndSelect('b.members', 'test')
-      .getMany();
-
-    return;
-  }
 }

@@ -9,6 +9,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { Logger } from 'nestjs-pino';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -16,6 +17,14 @@ async function bootstrap() {
     // cors: true,
   });
   //   app.setGlobalPrefix('api');
+
+  app.use(
+    session({
+      secret: 'tobeqwer22', //세션아이디
+      resave: false, //세션이 수정되지 않아도 지속적으로 저장하게 하는 옵션
+      saveUninitialized: false, //초기화되지 않는 세션을 저장하게 함
+    }),
+  );
 
   // # 폴더 경로 설정
   app.useStaticAssets(join(__dirname, '../..', 'files'), {

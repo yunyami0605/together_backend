@@ -7,6 +7,8 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { StudyBoardRepository } from './board.repository';
 import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
 import { UserRepository } from 'src/user/user.repository';
+import { TmpImgRepository } from 'src/tmpImg/TmpImg.repository';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class BoardService {
@@ -15,6 +17,7 @@ export class BoardService {
     private readonly boardMemberRepo: BoardMemberRepository,
     private readonly commentRepo: CommentRepository,
     private readonly usertRepo: UserRepository,
+    private readonly tmpImgRepo: TmpImgRepository,
   ) {}
 
   findList(query: GetBoardListDto) {
@@ -42,6 +45,9 @@ export class BoardService {
     }
   }
 
+  /**
+   *@description test file upload service logic
+   */
   uploadFile(file: Express.Multer.File, id: number) {
     return this.studyBoardRepo.uploadFile(file, id);
   }
@@ -54,8 +60,10 @@ export class BoardService {
     body: CreateBoardDto,
     file: Express.Multer.File,
     writerId: number,
+    filename: string | undefined,
   ) {
     const boardId = await this.studyBoardRepo.createBoard(body, file, writerId);
+    if (filename) this.tmpImgRepo.deleteTmpImg(filename);
     this.boardMemberRepo.createBoardMember(boardId, writerId);
     return boardId;
   }
@@ -83,5 +91,18 @@ export class BoardService {
 
   addBoardMember(boardId: number, userId: number) {
     return this.boardMemberRepo.createBoardMember(boardId, userId);
+  }
+
+  removeBoardMember(boardId: number, userId: number) {
+    return this.boardMemberRepo.removeBoardMember(boardId, userId);
+  }
+
+  uploadTmpImg(filename: string) {
+    return this.tmpImgRepo.createTmpImg(filename);
+  }
+
+  @Cron('45 * * * * *')
+  removeTmpImgCrop() {
+    this.tmpImgRepo.deleteAllTmpImg();
   }
 }
