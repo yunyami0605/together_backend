@@ -1,8 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
+
+/**
+ *@description : user api service logic
+ */
 @Injectable()
 export class UserService {
   constructor(private readonly userRepo: UserRepository) {}

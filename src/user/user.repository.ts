@@ -1,15 +1,13 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  HttpException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
+import { InternalServerErrorException } from '@nestjs/common';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '../entity/user.entity';
 
+/**
+ *@description : user api repository
+ */
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
   //
@@ -33,13 +31,6 @@ export class UserRepository extends Repository<UserEntity> {
   async findUser(id: number) {
     try {
       const res = await this.findOne({ where: { id } });
-      // const res = await this.createQueryBuilder('u')
-      // .select([
-      //   'u.id',
-      //   'u.email',
-      //   'u.nickname',
-
-      // ])
 
       return res;
     } catch (e: any) {
@@ -88,7 +79,6 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   async loginUser({ email, password }: LoginUserDto) {
-    // const res = await this.findEmail(email);
     try {
       const res = await this.findOne({
         where: { email },
@@ -103,7 +93,7 @@ export class UserRepository extends Repository<UserEntity> {
 
   async updateUser(id: number, body: UpdateUserDto) {
     try {
-      const res = await this.createQueryBuilder()
+      await this.createQueryBuilder()
         .update('user')
         .set(body)
         .where('id = :id', { id })
@@ -117,7 +107,7 @@ export class UserRepository extends Repository<UserEntity> {
 
   async removeUser(id: number) {
     try {
-      const res = await this.softDelete({ id });
+      await this.softDelete({ id });
 
       return id;
     } catch (e: any) {

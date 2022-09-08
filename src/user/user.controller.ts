@@ -7,16 +7,15 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
-  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from 'src/study/board/dto/login-user.dto';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+/**
+ *@description : user api controller
+ */
 @ApiTags('user api')
 @Controller('api/user')
 export class UserController {
