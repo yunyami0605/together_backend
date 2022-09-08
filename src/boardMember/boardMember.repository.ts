@@ -4,6 +4,11 @@ import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(BoardMemberEntity)
 export class BoardMemberRepository extends Repository<BoardMemberEntity> {
+  /**
+   *@description : add member to participate content on board
+   *@param {number} boardId - board id
+   *@param {number} userId - user id
+   */
   async createBoardMember(
     boardId: number,
     userId: number,
@@ -22,14 +27,18 @@ export class BoardMemberRepository extends Repository<BoardMemberEntity> {
     }
   }
 
+  /**
+   *@description : remove member participated on board
+   *@param {number} boardId - board id
+   *@param {number} userId - user id
+   */
   async removeBoardMember(boardId: number, userId: number): Promise<number> {
     try {
-      const result = await this.createQueryBuilder('bm')
+      await this.createQueryBuilder('bm')
         .delete()
         .where({ boardId, userId })
         .execute();
 
-      console.log(result);
       return boardId;
     } catch (e) {
       throw new InternalServerErrorException(e);
