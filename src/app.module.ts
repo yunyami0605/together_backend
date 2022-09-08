@@ -61,6 +61,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         LikeEntity,
         TmpImageEntity,
       ],
+      timezone: 'Z',
       synchronize: false,
       autoLoadEntities: true,
     }),
