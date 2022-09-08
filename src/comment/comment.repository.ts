@@ -6,7 +6,6 @@ import { CommentEntity } from '../entity/comment.entity';
 
 /**
  *@description : control comment db on repo
- *@param {CreateCommentDto} body - create comment data
  */
 @EntityRepository(CommentEntity)
 export class CommentRepository extends Repository<CommentEntity> {
@@ -17,13 +16,8 @@ export class CommentRepository extends Repository<CommentEntity> {
   async createComment(body: CreateCommentDto, writerId: number) {
     try {
       const { content, boardId } = body;
-      console.log('@@ CREATE comment');
-      console.log(boardId);
-      console.log(typeof boardId);
 
       const comment = this.create({ content, boardId, writerId });
-
-      console.log(comment);
       await this.save(comment);
 
       return comment;
@@ -66,21 +60,8 @@ export class CommentRepository extends Repository<CommentEntity> {
    */
   async getComment(id: number) {
     try {
-      // const res = await this.createQueryBuilder('b')
-      //   .where('b.id = :id', { id })
-      //   .getOne();
-
-      /*
-      .createQueryBuilder('user')
-      .innerJoin('user.WorkspaceMembers', 'members')
-      .innerJoin('members.Workspace', 'workspace', 'workspace.url = :url', {
-        url,
-      })
-      .getMany();
-      */
       const res = await this.createQueryBuilder('c')
         .select(['c.id', 'c.content'])
-        // .leftJoin('c.boardId', 'b')
         .where('c.id = :id', { id })
         .getOne();
 
@@ -97,7 +78,7 @@ export class CommentRepository extends Repository<CommentEntity> {
    */
   async updateComment(id: number, body: UpdateCommentDto) {
     try {
-      const res = await this.createQueryBuilder()
+      await this.createQueryBuilder()
         .update('comment')
         .set(body)
         .where('id = :id', { id })
@@ -113,7 +94,7 @@ export class CommentRepository extends Repository<CommentEntity> {
    */
   async removeComment(id: number) {
     try {
-      const res = await this.softDelete({ id });
+      await this.softDelete({ id });
 
       return id;
     } catch (error) {

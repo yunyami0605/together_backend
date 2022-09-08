@@ -4,6 +4,9 @@ import { CommentController } from './comment.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentRepository } from './comment.repository';
 
+/**
+ *@description : board comment module
+ */
 @Module({
   imports: [TypeOrmModule.forFeature([CommentRepository])],
   controllers: [CommentController],

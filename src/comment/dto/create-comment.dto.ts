@@ -1,4 +1,4 @@
-import { IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNumber, IsString, MaxLength } from 'class-validator';
 
 export class CreateCommentDto {
   @MaxLength(255)

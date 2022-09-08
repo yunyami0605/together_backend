@@ -4,6 +4,9 @@ import { CommentRepository } from './comment.repository';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
+/**
+ *@description : comment service logic script
+ */
 @Injectable()
 export class CommentService {
   constructor(private readonly commentRepo: CommentRepository) {}
