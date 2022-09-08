@@ -35,7 +35,6 @@ export class TmpImgRepository extends Repository<TmpImageEntity> {
       utc + KOREAN_TIME_THRES_VALUE - DIFF_DELETE_THRES,
     );
 
-    console.log(deleteTime);
     this.createQueryBuilder()
       .delete()
       .where('createdAt < :deleteTime', { deleteTime })
@@ -49,9 +48,6 @@ export class TmpImgRepository extends Repository<TmpImageEntity> {
   async deleteTmpImg(filename: string) {
     try {
       const tmp = filename.split(';');
-
-      console.log('@ DELETE TMP IMG');
-      console.log(filename);
 
       const tmpArray = tmp || [filename];
 

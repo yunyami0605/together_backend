@@ -8,7 +8,7 @@ import { StudyBoardRepository } from './board.repository';
 import { BoardMemberRepository } from 'src/boardMember/boardMember.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { TmpImgRepository } from 'src/tmpImg/TmpImg.repository';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class BoardService {
@@ -101,7 +101,8 @@ export class BoardService {
     return this.tmpImgRepo.createTmpImg(filename);
   }
 
-  @Cron('45 * * * * *')
+  // @Cron('* * 0/6 1/1 * ?')
+  @Cron(CronExpression.EVERY_6_HOURS)
   removeTmpImgCrop() {
     this.tmpImgRepo.deleteAllTmpImg();
   }
