@@ -3,6 +3,9 @@ import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { LikeRepository } from './like.repository';
 
+/**
+ *@description : board like api service logic
+ */
 @Injectable()
 export class LikeService {
   constructor(private readonly likeRepo: LikeRepository) {}
