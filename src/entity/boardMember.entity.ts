@@ -8,6 +8,9 @@ import {
 import { StudyBoardEntity } from './board.entity';
 import { UserEntity } from './user.entity';
 
+/**
+ *@description 게시판 & User, many to many 중간 테이블
+ */
 @Entity({ schema: 'together', name: 'boardmember' })
 export class BoardMemberEntity extends BaseEntity {
   @PrimaryColumn({ type: 'int', name: 'boardId' })

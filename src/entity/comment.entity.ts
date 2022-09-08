@@ -8,22 +8,18 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+/**
+ *@description comment enttiy
+ */
 @Entity({ schema: 'together', name: 'comment' })
 export class CommentEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  /**
-    writerId INT NOT NULL,
-    boardId INT NOT NULL,
-    FOREIGN KEY (writerId) REFERENCES together.user(id),
-    FOREIGN KEY (boardId) REFERENCES together.studyboard(id)
-     */
   @Column('varchar', { name: 'content', length: 255, nullable: false })
   content: string;
 

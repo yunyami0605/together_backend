@@ -6,7 +6,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Index,
   JoinColumn,
   JoinTable,
   ManyToMany,
@@ -18,6 +17,9 @@ import {
 import { BoardMemberEntity } from './boardMember.entity';
 import { LikeEntity } from './like.entity';
 
+/**
+ *@description 게시판 entity
+ */
 @Entity({ schema: 'together', name: 'studyBoard' })
 export class StudyBoardEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

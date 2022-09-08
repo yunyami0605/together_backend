@@ -8,6 +8,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+/**
+ *@description tmp image entity
+ */
 @Entity({ schema: 'together', name: 'tmpImg' })
 export class TmpImageEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

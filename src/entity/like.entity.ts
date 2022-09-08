@@ -3,12 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StudyBoardEntity } from './board.entity';
 import { UserEntity } from './user.entity';
 
+/**
+ *@description like entity
+ */
 @Entity({ schema: 'together', name: 'like' })
 export class LikeEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

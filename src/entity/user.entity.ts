@@ -14,6 +14,9 @@ import {
 import { BoardMemberEntity } from './boardMember.entity';
 import { LikeEntity } from './like.entity';
 
+/**
+ *@description user entity
+ */
 @Entity({ schema: 'together', name: 'user' })
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
