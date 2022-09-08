@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Param,
   Patch,
   Post,
@@ -19,8 +18,12 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
 import { GetBoardListDto } from './dto/get-boardList.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
+import { TRequest } from 'src/@types/common';
+import { CreateBoardDto } from './dto/create-board.dto';
 
+/**
+ *@description : all board controller
+ */
 @Controller('api/study/board')
 export class BoardController {
   constructor(
@@ -28,6 +31,11 @@ export class BoardController {
     private readonly userService: UserService,
   ) {}
 
+  /**
+   *@description : set favorite on board
+   *@param {string} favorite - favorite about board
+   *@param {string} id - board id
+   */
   @UseGuards(JwtAuthGuard)
   @Get('/favorite')
   setFavorite(@Query() query: { id: string; favorite: string }) {
@@ -41,16 +49,26 @@ export class BoardController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
+  findOne(@Param('id') id: string) {
     return this.boardService.findOne(+id);
   }
 
+  /**
+   *@description : create board
+   *@param {CreateBoardDto} body - board content to create
+   */
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @Post()
-  create(@Body() body, @UploadedFile() file: Express.Multer.File, @Req() req) {
+  create(
+    @Body() body: any,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: TRequest,
+  ) {
+    const data: CreateBoardDto = body;
+
     return this.boardService.create(
-      body,
+      data,
       file,
       req.user.userId,
       req.session?.filename,
@@ -69,9 +87,15 @@ export class BoardController {
     return this.boardService.uploadFile(file, +id);
   }
 
+  /**
+   *@description : 게시판 등록 에디터에 올라오는 임시 이미지.
+   */
   @UseInterceptors(FileInterceptor('image'))
   @Post('/upload/tmp_image')
-  tmpImgUpload(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+  tmpImgUpload(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: TRequest,
+  ) {
     type TSession = typeof req.session;
     let session = req.session as TSession & { filename: string };
 
@@ -93,24 +117,27 @@ export class BoardController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
+  remove(@Param('id') id: string, @Req() req: TRequest) {
     return this.boardService.remove(+id, req?.user?.userId);
   }
 
-  @Get('/count')
-  count(@Param('tmp') tmp: string) {
-    return Number(tmp) + 1;
-  }
-
+  /**
+   *@description : add board member to partipate group
+   *@param {string} boardId - board id
+   */
   @UseGuards(JwtAuthGuard)
   @Patch(':id/member')
-  addBoardMember(@Param('id') boardId, @Req() req) {
-    return this.boardService.addBoardMember(boardId, req.user?.userId);
+  addBoardMember(@Param('id') boardId: string, @Req() req: TRequest) {
+    return this.boardService.addBoardMember(+boardId, req.user?.userId);
   }
 
+  /**
+   *@description : delete board member to partipate group
+   *@param {string} boardId - board id
+   */
   @UseGuards(JwtAuthGuard)
   @Delete(':id/member')
-  removeBoardMember(@Param('id') boardId, @Req() req) {
-    return this.boardService.removeBoardMember(boardId, req?.user?.userId);
+  removeBoardMember(@Param('id') boardId: string, @Req() req: TRequest) {
+    return this.boardService.removeBoardMember(+boardId, req?.user?.userId);
   }
 }

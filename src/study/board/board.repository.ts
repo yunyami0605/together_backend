@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
-import { TryCatch } from 'src/decorator/exceptrionDecorator';
+import { HttpException, InternalServerErrorException } from '@nestjs/common';
 import { EntityRepository, In, Like, Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { GetBoardListDto } from './dto/get-boardList.dto';
@@ -48,7 +43,6 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         tagList,
         writer: Number(writerId),
         imgPath: file.path,
-        // status: 'PUBLIC',
       });
       await this.save(board);
       return board.id;
@@ -66,18 +60,6 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         })
         .where('id = :id', { id })
         .execute();
-      /*
-      {
-        fieldname: 'image',
-        originalname: 'test.jpg',
-        encoding: '7bit',
-        mimetype: 'image/jpeg',
-        destination: 'files/',
-        filename: '8eb319948c840c7a55d8f1a6ff961cb6.jpg',
-        path: 'files\\8eb319948c840c7a55d8f1a6ff961cb6.jpg',
-        size: 68692
-      }
-      */
 
       return {
         filename: file.filename,
@@ -231,13 +213,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     }
   }
 
-  /**
-   *@description
-   *@param {}  -
-   */
   async updateBoard(id: number, body: UpdateBoardDto) {
     try {
-      const res = await this.createQueryBuilder()
+      await this.createQueryBuilder()
         .update('studyBoard')
         .set(body)
         .where('id = :id', { id })
