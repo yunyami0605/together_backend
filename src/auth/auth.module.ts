@@ -9,6 +9,9 @@ import { jwtConstants } from './authContant';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 
+/**
+ *@description : login, logout auth api module
+ */
 @Module({
   // PassportModule.register({ session: true }),
   imports: [

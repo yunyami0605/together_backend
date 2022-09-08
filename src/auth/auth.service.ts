@@ -9,6 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/entity/user.entity';
 import { UserRepository } from 'src/user/user.repository';
 
+/**
+ *@description : login, logout auth api service logic
+ */
 @Injectable()
 export class AuthService {
   constructor(

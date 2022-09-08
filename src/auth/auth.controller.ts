@@ -3,6 +3,9 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
+/**
+ *@description : login, logout auth api controller
+ */
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
