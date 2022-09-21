@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { TmpImageEntity } from 'src/entity/tmpImg.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import * as fs from 'fs';
+import { deleteFile } from 'src/tool';
 
 @EntityRepository(TmpImageEntity)
 export class TmpImgRepository extends Repository<TmpImageEntity> {
@@ -48,7 +48,7 @@ export class TmpImgRepository extends Repository<TmpImageEntity> {
 
     // 임시 파일 삭제 로직
     res.forEach(async (item) => {
-      fs.unlink(`${item.filename}`, (err) => {});
+      deleteFile(item.filename);
     });
 
     // db에 임시 파일 데이터 삭제

@@ -110,9 +110,14 @@ export class BoardController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateBoardDto) {
-    return this.boardService.update(+id, body);
+  update(
+    @Param('id') id: string,
+    @Body() body: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.boardService.update(+id, body, file);
   }
 
   @UseGuards(JwtAuthGuard)

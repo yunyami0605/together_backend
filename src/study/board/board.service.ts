@@ -9,6 +9,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { TmpImgRepository } from 'src/tmpImg/TmpImg.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { UserEntity } from 'src/entity/user.entity';
+import { deleteFile } from 'src/tool';
 
 /**
  *@description : board api service
@@ -84,8 +85,20 @@ export class BoardService {
     return boardId;
   }
 
-  update(id: number, body: UpdateBoardDto) {
-    return this.studyBoardRepo.updateBoard(id, body);
+  /**
+   *@description update board
+   *@param {number} id - board id
+   *@param {UpdateBoardDto} body - update body
+   */
+  async update(id: number, body: UpdateBoardDto, file?: Express.Multer.File) {
+    const boardData = await this.studyBoardRepo.findBoard(id);
+
+    // img file이 변경되었을 경우, 기존 파일 삭제
+    if (file && boardData.imgPath !== file.filename) {
+      deleteFile(boardData.imgPath, (err) => console.log(err));
+    }
+
+    return this.studyBoardRepo.updateBoard(id, body, file);
   }
 
   async remove(id: number, userId?: number) {
@@ -99,6 +112,8 @@ export class BoardService {
         // # 해당 게시판에 대해 삭제 권한이 없을 경우
         throw new HttpException('Not Access Authorization ', 403);
       }
+
+      deleteFile(boardData.imgPath, (err) => console.log(err));
     } else {
       throw new HttpException('No Board', 403);
     }

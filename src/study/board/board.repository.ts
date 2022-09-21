@@ -28,6 +28,10 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
         tagList,
       } = createBoardDto;
 
+      /**
+       * filepath: files\548ee35d6cc91c9505c6dcde7d46788b.png
+       */
+
       const board = this.create({
         title,
         content,
@@ -160,6 +164,8 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
           'b.createdAt',
           'b.tagList',
           'b.writer',
+          'b.imgPath',
+
           'u.id',
           'u.nickname',
         ])
@@ -213,11 +219,27 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     }
   }
 
-  async updateBoard(id: number, body: UpdateBoardDto) {
+  /**
+   *@description : update board repo
+   */
+  async updateBoard(
+    id: number,
+    body: UpdateBoardDto,
+    file?: Express.Multer.File,
+  ) {
     try {
+      const dataSet = file
+        ? {
+            ...body,
+            imgPath: file.path,
+          }
+        : body;
+
       await this.createQueryBuilder()
         .update('studyBoard')
-        .set(body)
+        .set({
+          ...dataSet,
+        })
         .where('id = :id', { id })
         .execute();
 
@@ -227,6 +249,9 @@ export class StudyBoardRepository extends Repository<StudyBoardEntity> {
     }
   }
 
+  /**
+   *@description : remove board repo
+   */
   async removeBoard(id: number) {
     try {
       await this.softDelete({ id });
