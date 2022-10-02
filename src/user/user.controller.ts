@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 /**
  *@description : user api controller
@@ -32,14 +38,23 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @UseInterceptors(FileInterceptor('image'))
   @Post()
-  create(@Body() body: CreateUserDto) {
-    return this.userService.create(body);
+  create(@Body() body: any, @UploadedFile() file?: Express.Multer.File) {
+    const data: CreateUserDto = body;
+
+    return this.userService.create(data, file);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    return this.userService.update(+id, body);
+  update(
+    @Param('id') id: string,
+    @Body() body: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.userService.update(+id, body, file);
   }
 
   @Delete(':id')

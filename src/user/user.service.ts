@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { deleteFile } from 'src/tool';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,7 +21,7 @@ export class UserService {
     return this.userRepo.findUser(id);
   }
 
-  async create(body: CreateUserDto) {
+  async create(body: CreateUserDto, file?: Express.Multer.File) {
     const isUserEmail = await this.userRepo.findEmail(body.email);
     const isUserNickname = await this.userRepo.findNickname(body.nickname);
 
@@ -30,11 +31,17 @@ export class UserService {
     if (isUserNickname)
       throw new HttpException('이미 존재하는 닉네임입니다.', 403);
 
-    return this.userRepo.createUser(body);
+    return this.userRepo.createUser(body, file);
   }
 
-  update(id: number, body: UpdateUserDto) {
-    return this.userRepo.updateUser(id, body);
+  async update(id: number, body: UpdateUserDto, file?: Express.Multer.File) {
+    const userData = await this.userRepo.findUser(id);
+
+    if (file && userData.imgPath !== file.filename) {
+      deleteFile(userData.imgPath, (err) => console.log(err));
+    }
+
+    return this.userRepo.updateUser(id, body, file);
   }
 
   remove(id: number) {

@@ -31,15 +31,6 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { name: 'password', length: 100, select: false })
   password: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt?: Date | null;
-
   @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.writer)
   studyBoard: StudyBoardEntity[];
 
@@ -54,4 +45,28 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => CommentEntity, (comment) => comment.writerId)
   comment: CommentEntity[];
+
+  @Column('int', { name: 'location1', default: 1 })
+  location1: number;
+
+  @Column('int', { name: 'location2', default: 0 })
+  location2: number;
+
+  @Column({
+    type: 'json',
+    nullable: true,
+  })
+  careerList: [number, number][];
+
+  @Column('varchar', { name: 'imgPath', default: null })
+  imgPath: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
 }

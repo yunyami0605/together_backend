@@ -38,16 +38,16 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  async createUser({ email, password, nickname }: CreateUserDto) {
+  async createUser(body: CreateUserDto, file: Express.Multer.File) {
     try {
       const bcrypt = require('bcrypt');
 
-      const hashedPassword = await bcrypt.hash(password, 12);
+      const hashedPassword = await bcrypt.hash(body.password, 12);
 
       const user = this.create({
-        email,
+        ...body,
         password: hashedPassword,
-        nickname,
+        imgPath: file.path,
       });
 
       await this.save(user);
@@ -91,11 +91,22 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  async updateUser(id: number, body: UpdateUserDto) {
+  async updateUser(
+    id: number,
+    body: UpdateUserDto,
+    file?: Express.Multer.File,
+  ) {
     try {
+      const dataSet = file
+        ? {
+            ...body,
+            imgPath: file.path,
+          }
+        : body;
+
       await this.createQueryBuilder()
         .update('user')
-        .set(body)
+        .set({ ...dataSet })
         .where('id = :id', { id })
         .execute();
 
