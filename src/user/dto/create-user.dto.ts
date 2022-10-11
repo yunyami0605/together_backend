@@ -30,4 +30,10 @@ export class CreateUserDto {
   @IsNumber()
   @IsNotEmpty()
   location2: number;
+
+  @IsNumber()
+  socialID: number;
+
+  @IsString()
+  socialType: string;
 }

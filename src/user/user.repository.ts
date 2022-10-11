@@ -4,6 +4,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '../entity/user.entity';
+import { ITmpSocialUser } from 'src/@types/user';
 
 /**
  *@description : user api repository
@@ -55,6 +56,28 @@ export class UserRepository extends Repository<UserEntity> {
       return user;
     } catch (e: any) {
       throw new InternalServerErrorException(e);
+    }
+  }
+
+  async createSocialUser(body: CreateUserDto, file: Express.Multer.File) {
+    try {
+      const dataSet = {
+        ...body,
+        imgPath: file.path,
+      };
+
+      const res = await this.createQueryBuilder()
+        .update('user')
+        .set({ ...dataSet })
+        .where('socialID = :socialID and socialType = :socialType', {
+          socialID: body.socialID,
+          socialType: body.socialType,
+        })
+        .execute();
+
+      return res;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
@@ -139,6 +162,38 @@ export class UserRepository extends Repository<UserEntity> {
       return result;
     } catch (e: any) {
       throw new InternalServerErrorException(e);
+    }
+  }
+
+  async checkSocialUser(socialType: string, socialID: number) {
+    try {
+      const result = await this.findOne({ socialType, socialID });
+
+      console.log('@@@ SOCIAL CHECK RESULT');
+      console.log(result);
+
+      const ret = {
+        isNoDataUser: result.socialID ? false : true,
+        isNoRegisterUser: result.nickname ? false : true,
+        id: result.id,
+        email: result.email,
+      };
+
+      return ret;
+    } catch (error: any) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async createTmpSocialUser(data: ITmpSocialUser) {
+    try {
+      const user = this.create(data);
+      const result = await this.save(user);
+
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

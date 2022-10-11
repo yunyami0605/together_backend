@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { ITmpSocialUser } from 'src/@types/user';
 import { deleteFile } from 'src/tool';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,13 +26,20 @@ export class UserService {
     const isUserEmail = await this.userRepo.findEmail(body.email);
     const isUserNickname = await this.userRepo.findNickname(body.nickname);
 
+    console.log('@@@ SOCIAL USESR CREATE');
+    console.log('@@@ SOCIAL USESR CREATE');
+    console.log(body);
+
     // @ 유저가 존재할 경우,
     if (isUserEmail)
       throw new HttpException('이미 존재하는 이메일입니다.', 403);
     if (isUserNickname)
       throw new HttpException('이미 존재하는 닉네임입니다.', 403);
 
-    return this.userRepo.createUser(body, file);
+    if (body.socialID) return this.userRepo.createSocialUser(body, file);
+    else {
+      return this.userRepo.createUser(body, file);
+    }
   }
 
   async update(id: number, body: UpdateUserDto, file?: Express.Multer.File) {
@@ -48,7 +56,7 @@ export class UserService {
     return this.userRepo.removeUser(id);
   }
 
-  login(body: LoginUserDto) {
-    return this.userRepo.loginUser(body);
+  createTmpSocialUser(data: ITmpSocialUser) {
+    return this.userRepo.createTmpSocialUser(data);
   }
 }

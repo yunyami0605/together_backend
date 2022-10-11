@@ -8,12 +8,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './authContant';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { HttpModule } from '@nestjs/axios';
+import { KakaoStrategy } from './kakao.strategy';
+import { UserService } from 'src/user/user.service';
 
 /**
  *@description : login, logout auth api module
  */
 @Module({
-  // PassportModule.register({ session: true }),
   imports: [
     PassportModule,
     TypeOrmModule.forFeature([UserRepository]),
@@ -21,10 +23,19 @@ import { LocalStrategy } from './local.strategy';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '4h' },
     }),
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    KakaoStrategy,
+    UserService,
+  ],
   exports: [AuthService],
-  // providers: [AuthService, LocalStrategy, LocalSerializer],
 })
 export class AuthModule {}

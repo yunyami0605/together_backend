@@ -22,13 +22,23 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'email', unique: true, length: 30 })
+  @Column('varchar', { name: 'email', length: 30, default: '' })
   email: string;
 
-  @Column('varchar', { name: 'nickname', unique: true, length: 30 })
+  @Column('varchar', {
+    name: 'nickname',
+    unique: true,
+    length: 30,
+    default: '',
+  })
   nickname: string;
 
-  @Column('varchar', { name: 'password', length: 100, select: false })
+  @Column('varchar', {
+    name: 'password',
+    length: 100,
+    select: false,
+    default: '',
+  })
   password: string;
 
   @OneToMany(() => StudyBoardEntity, (studyBoard) => studyBoard.writer)
@@ -60,6 +70,16 @@ export class UserEntity extends BaseEntity {
 
   @Column('varchar', { name: 'imgPath', default: null })
   imgPath: string;
+
+  @Column('varchar', {
+    name: 'socialType',
+    default: 'normal',
+    nullable: false,
+  })
+  socialType: string;
+
+  @Column('int', { name: 'socialId', default: 0, nullable: false })
+  socialID: number;
 
   @CreateDateColumn()
   createdAt: Date;
