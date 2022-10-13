@@ -14,6 +14,7 @@ import {
 import { ISocialLoginBody, ITmpSocialUser } from 'src/@types/user';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
+import { GoogleAuthGuard } from './guard/google.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { KakaoAuthGuard } from './guard/kakao.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
@@ -45,6 +46,60 @@ export class AuthController {
   @Post('/logout')
   async logout(@Request() req, @Response() res, @Body() body) {
     return this.authService.logout(res, req.user?.userId);
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('/login/google')
+  loginGoogle() {
+    console.log('GOOGLE LOGIN COMPLETE');
+    return 1;
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('/login/google/redirect')
+  async loginGoogleCallback(@Req() req, @Response() res) {
+    console.log('@@@ GOOGLE LOGIN CALLBACK');
+
+    const { accessToken, refreshToken, profile } = req.user;
+
+    if (profile.id) {
+      const { isNoDataUser, isNoRegisterUser, id, email } =
+        await this.authService.checkSocialUser(profile.provider, profile.id);
+
+      console.log('@@@ RESULT');
+      console.log(isNoDataUser);
+      console.log(isNoRegisterUser);
+      console.log(id);
+
+      if (isNoRegisterUser) {
+        // 소셜 회원이 아닐 경우, 임시 회원 생성 후, 회원가입 페이지로 리다이랙트
+        console.log('GO REGISTER');
+        const createUserData: ITmpSocialUser = {
+          socialID: profile.id,
+          socialType: profile.provider,
+          accessToken,
+          refreshToken,
+        };
+
+        if (isNoDataUser) this.userService.createTmpSocialUser(createUserData);
+        res.redirect(
+          `${process.env.CLIENT_URL_DOMAIN}/user/register?social_id=${profile.id}&social_type=${profile.provider}`,
+        );
+
+        return 1;
+      } else {
+        // 소셜 회원일 경우, 토큰 부여
+        const createUserData: ISocialLoginBody = {
+          sub: id,
+          email,
+        };
+
+        return this.authService.socialLogin(createUserData, res);
+      }
+    }
+    // social login 인증이 안될 경우,
+
+    throw new HttpException('NOT SOCIAL AUTHORIZED', 401);
   }
 
   @UseGuards(NaverAuthGuard)
@@ -99,8 +154,6 @@ export class AuthController {
     // social login 인증이 안될 경우,
 
     throw new HttpException('NOT SOCIAL AUTHORIZED', 401);
-
-    return 1;
   }
 
   @UseGuards(KakaoAuthGuard)

@@ -12,6 +12,7 @@ import { LocalStrategy } from './guard/local.strategy';
 import { JwtStrategy } from './guard/jwt.strategy';
 import { KakaoStrategy } from './guard/kakao.strategy';
 import { NaverStrategy } from './guard/naver.strategy';
+import { GoogleStrategy } from './guard/google.strategy';
 
 /**
  *@description : login, logout auth api module
@@ -36,6 +37,7 @@ import { NaverStrategy } from './guard/naver.strategy';
     JwtStrategy,
     KakaoStrategy,
     NaverStrategy,
+    GoogleStrategy,
     UserService,
   ],
   exports: [AuthService],
