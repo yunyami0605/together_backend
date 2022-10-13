@@ -165,18 +165,15 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  async checkSocialUser(socialType: string, socialID: number) {
+  async checkSocialUser(socialType: string, socialID: string) {
     try {
       const result = await this.findOne({ socialType, socialID });
 
-      console.log('@@@ SOCIAL CHECK RESULT');
-      console.log(result);
-
       const ret = {
-        isNoDataUser: result.socialID ? false : true,
-        isNoRegisterUser: result.nickname ? false : true,
-        id: result.id,
-        email: result.email,
+        isNoDataUser: result?.socialID ? false : true,
+        isNoRegisterUser: result?.nickname ? false : true,
+        id: result?.id,
+        email: result?.email,
       };
 
       return ret;

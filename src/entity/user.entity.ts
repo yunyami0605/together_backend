@@ -78,8 +78,8 @@ export class UserEntity extends BaseEntity {
   })
   socialType: string;
 
-  @Column('int', { name: 'socialId', default: 0, nullable: false })
-  socialID: number;
+  @Column('varchar', { name: 'socialId', default: '', nullable: false })
+  socialID: string;
 
   @CreateDateColumn()
   createdAt: Date;

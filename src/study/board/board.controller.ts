@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
 import { GetBoardListDto } from './dto/get-boardList.dto';
 import { FileInterceptor } from '@nestjs/platform-express';

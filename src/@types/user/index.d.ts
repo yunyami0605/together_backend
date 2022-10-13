@@ -1,6 +1,6 @@
 export interface ITmpSocialUser {
   socialType: string;
-  socialID: number;
+  socialID: string;
   accessToken: string;
   refreshToken: string;
 }

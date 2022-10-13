@@ -6,11 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './authContant';
-import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy';
 import { HttpModule } from '@nestjs/axios';
-import { KakaoStrategy } from './kakao.strategy';
 import { UserService } from 'src/user/user.service';
+import { LocalStrategy } from './guard/local.strategy';
+import { JwtStrategy } from './guard/jwt.strategy';
+import { KakaoStrategy } from './guard/kakao.strategy';
+import { NaverStrategy } from './guard/naver.strategy';
 
 /**
  *@description : login, logout auth api module
@@ -34,6 +35,7 @@ import { UserService } from 'src/user/user.service';
     LocalStrategy,
     JwtStrategy,
     KakaoStrategy,
+    NaverStrategy,
     UserService,
   ],
   exports: [AuthService],

@@ -26,10 +26,6 @@ export class UserService {
     const isUserEmail = await this.userRepo.findEmail(body.email);
     const isUserNickname = await this.userRepo.findNickname(body.nickname);
 
-    console.log('@@@ SOCIAL USESR CREATE');
-    console.log('@@@ SOCIAL USESR CREATE');
-    console.log(body);
-
     // @ 유저가 존재할 경우,
     if (isUserEmail)
       throw new HttpException('이미 존재하는 이메일입니다.', 403);

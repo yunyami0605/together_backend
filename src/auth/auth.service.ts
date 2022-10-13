@@ -49,7 +49,7 @@ export class AuthService {
    *@description 등록된 social 유저인지 check
    *@param {}  -
    */
-  checkSocialUser(socialType: string, socialID: number) {
+  checkSocialUser(socialType: string, socialID: string) {
     return this.userRepo.checkSocialUser(socialType, socialID);
   }
 
