@@ -81,6 +81,9 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { name: 'socialId', default: '', nullable: false })
   socialID: string;
 
+  @Column('varchar', { name: 'hashedRefreshToken', default: null, length: 500 })
+  hashedRefreshToken: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

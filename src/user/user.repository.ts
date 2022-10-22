@@ -6,9 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { ITmpSocialUser } from 'src/@types/user';
 
-/**
- *@description : user api repository
- */
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
   //
@@ -165,6 +162,9 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  /**
+   *@description 소셜 로그인 시, 등록된 유저인지 확인
+   */
   async checkSocialUser(socialType: string, socialID: string) {
     try {
       const result = await this.findOne({ socialType, socialID });
@@ -178,16 +178,40 @@ export class UserRepository extends Repository<UserEntity> {
 
       return ret;
     } catch (error: any) {
+      console.log(error);
       throw new InternalServerErrorException(error);
     }
   }
 
+  /**
+   *@description 임시 유저 정보 생성
+   */
   async createTmpSocialUser(data: ITmpSocialUser) {
     try {
       const user = this.create(data);
       const result = await this.save(user);
 
       return result;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  /**
+   *@description 유저 로그인 후, refresh 토큰 저장
+   *@param {number} id - user id
+   */
+  async registerRefreshToken(id: number, refreshToken: string) {
+    try {
+      const res = await this.createQueryBuilder()
+        .update('user')
+        .set({ hashedRefreshToken: refreshToken })
+        .where('id = :id', { id })
+        .execute();
+
+      console.log('@@@ UPDATE REFRESH TOKEN');
+      console.log(res);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);

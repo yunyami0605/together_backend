@@ -4,6 +4,7 @@ import {
   HttpException,
   Injectable,
   Request,
+  Res,
   Response,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -47,24 +48,48 @@ export class AuthService {
 
   /**
    *@description 등록된 social 유저인지 check
-   *@param {}  -
+   *@param {string} socialType - naver, kakao, google
    */
   checkSocialUser(socialType: string, socialID: string) {
     return this.userRepo.checkSocialUser(socialType, socialID);
   }
 
-  async socialLogin(payload: ISocialLoginBody, @Response() res) {
-    const token = this.jwtService.sign(payload);
+  /**
+   *@description social profile 정보로 토큰 생성 및 응답
+   *@param payload - social profile 정보
+   */
+  async socialLogin(payload: ISocialLoginBody, @Res() res) {
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN_SECRET_KEY,
+      expiresIn: process.env.ACCESS_TOKEN_REMAIN_TIME,
+    });
 
-    // # httpOnly 부분 해결법 생각해보기
-    const cookie = `toat=${token}; ${
-      process.env.NODE_ENV !== 'production' ? '' : 'HttpOnly;'
-    }secure; samesite=lax; Path=/; Max-Age=${3600}`;
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.REFRESH_TOKEN_SECRET_KEY,
+      expiresIn: process.env.REFRESH_TOKEN_REMAIN_TIME,
+    });
 
-    res.setHeader('Set-Cookie', cookie);
+    // refresh 토큰 저장
+    await this.userRepo.registerRefreshToken(payload.sub, refreshToken);
+
+    res.cookie(process.env.ACCESS_TOKEN_NAME, accessToken, {
+      path: '/',
+      'max-age': `${process.env.ACCESS_TOKEN_REMAIN_TIME}`,
+      sameSite: 'lax',
+    });
+
+    res.cookie(process.env.REFRESH_TOKEN_NAME, accessToken, {
+      path: '/',
+      'max-age': `${process.env.REFRESH_TOKEN_REMAIN_TIME}`,
+      sameSite: 'lax',
+    });
+
     return res.redirect(`${process.env.CLIENT_URL_DOMAIN}/study`);
   }
 
+  /**
+   *@description email login service logic
+   */
   async login(@Request() req, @Response() res) {
     const { user }: { user: UserEntity } = req;
 
@@ -89,12 +114,17 @@ export class AuthService {
   async logout(@Response() res, id?: number) {
     if (!id) throw new HttpException('Not Access Authorization ', 403);
 
-    // # httpOnly 부분 해결법 생각해보기
-    const cookie = `toat=; ${
-      process.env.NODE_ENV !== 'production' ? '' : 'HttpOnly;'
-    }secure; samesite=lax; Path=/; Max-Age=${0}`;
+    res.cookie(process.env.ACCESS_TOKEN_NAME, '', {
+      path: '/',
+      'max-age': 0,
+      sameSite: 'lax',
+    });
 
-    res.setHeader('Set-Cookie', cookie);
+    res.cookie(process.env.REFRESH_TOKEN_NAME, '', {
+      path: '/',
+      'max-age': 0,
+      sameSite: 'lax',
+    });
 
     return res.send({
       statusCode: 204,

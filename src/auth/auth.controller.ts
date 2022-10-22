@@ -60,16 +60,11 @@ export class AuthController {
   async loginGoogleCallback(@Req() req, @Response() res) {
     console.log('@@@ GOOGLE LOGIN CALLBACK');
 
-    const { accessToken, refreshToken, profile } = req.user;
+    const { profile } = req.user;
 
     if (profile.id) {
       const { isNoDataUser, isNoRegisterUser, id, email } =
         await this.authService.checkSocialUser(profile.provider, profile.id);
-
-      console.log('@@@ RESULT');
-      console.log(isNoDataUser);
-      console.log(isNoRegisterUser);
-      console.log(id);
 
       if (isNoRegisterUser) {
         // 소셜 회원이 아닐 경우, 임시 회원 생성 후, 회원가입 페이지로 리다이랙트
@@ -77,8 +72,6 @@ export class AuthController {
         const createUserData: ITmpSocialUser = {
           socialID: profile.id,
           socialType: profile.provider,
-          accessToken,
-          refreshToken,
         };
 
         if (isNoDataUser) this.userService.createTmpSocialUser(createUserData);
@@ -114,33 +107,24 @@ export class AuthController {
   async loginNaverCallback(@Req() req, @Response() res) {
     console.log('@@@ NAVER LOGIN CALLBACK');
 
-    const { accessToken, refreshToken, profile } = req.user;
+    const { profile } = req.user;
 
     if (profile.id) {
       const { isNoDataUser, isNoRegisterUser, id, email } =
         await this.authService.checkSocialUser(profile.provider, profile.id);
 
-      console.log('@@@ RESULT');
-      console.log(isNoDataUser);
-      console.log(isNoRegisterUser);
-      console.log(id);
-
       if (isNoRegisterUser) {
         // 소셜 회원이 아닐 경우, 임시 회원 생성 후, 회원가입 페이지로 리다이랙트
-        console.log('GO REGISTER');
         const createUserData: ITmpSocialUser = {
           socialID: profile.id,
           socialType: profile.provider,
-          accessToken,
-          refreshToken,
         };
 
+        // 미회원이고, 첫 로그인 시,유저 db 생성
         if (isNoDataUser) this.userService.createTmpSocialUser(createUserData);
-        res.redirect(
+        return res.redirect(
           `${process.env.CLIENT_URL_DOMAIN}/user/register?social_id=${profile.id}&social_type=${profile.provider}`,
         );
-
-        return 1;
       } else {
         // 소셜 회원일 경우, 토큰 부여
         const createUserData: ISocialLoginBody = {
@@ -148,11 +132,12 @@ export class AuthController {
           email,
         };
 
+        // return 1;
         return this.authService.socialLogin(createUserData, res);
       }
     }
-    // social login 인증이 안될 경우,
 
+    // social login 인증이 안될 경우,
     throw new HttpException('NOT SOCIAL AUTHORIZED', 401);
   }
 
@@ -180,8 +165,6 @@ export class AuthController {
         const createUserData: ITmpSocialUser = {
           socialID: profile.id,
           socialType: profile.provider,
-          accessToken,
-          refreshToken,
         };
 
         if (isNoDataUser) this.userService.createTmpSocialUser(createUserData);
