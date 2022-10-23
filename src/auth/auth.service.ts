@@ -13,6 +13,7 @@ import { UserEntity } from 'src/entity/user.entity';
 import { UserRepository } from 'src/user/user.repository';
 import { AxiosResponse } from 'axios';
 import { ISocialLoginBody } from 'src/@types/user';
+import { TAccessToken } from 'src/@types/common';
 
 /**
  *@description : login, logout auth api service logic
@@ -61,12 +62,18 @@ export class AuthService {
   async socialLogin(payload: ISocialLoginBody, @Res() res) {
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET_KEY,
-      expiresIn: process.env.ACCESS_TOKEN_REMAIN_TIME,
+      expiresIn: `${process.env.ACCESS_TOKEN_REMAIN_TIME}m`,
     });
 
+    console.log('@@@ PROVIDE TOKEN');
+
+    console.log(accessToken);
+    console.log(process.env.ACCESS_TOKEN_REMAIN_TIME);
+
     const refreshToken = this.jwtService.sign(payload, {
+      // secret: process.env.ACCESS_TOKEN_SECRET_KEY,
       secret: process.env.REFRESH_TOKEN_SECRET_KEY,
-      expiresIn: process.env.REFRESH_TOKEN_REMAIN_TIME,
+      expiresIn: `${process.env.REFRESH_TOKEN_REMAIN_TIME}m`,
     });
 
     // refresh 토큰 저장
@@ -78,7 +85,7 @@ export class AuthService {
       sameSite: 'lax',
     });
 
-    res.cookie(process.env.REFRESH_TOKEN_NAME, accessToken, {
+    res.cookie(process.env.REFRESH_TOKEN_NAME, refreshToken, {
       path: '/',
       'max-age': `${process.env.REFRESH_TOKEN_REMAIN_TIME}`,
       sameSite: 'lax',
@@ -172,5 +179,50 @@ export class AuthService {
 
     console.log(res);
     return 1;
+  }
+
+  async refresh(refreshToken: string, @Response() res) {
+    const decodedToken = this.jwtService.decode(
+      refreshToken,
+    ) as TAccessToken | null;
+
+    if (!decodedToken) throw new HttpException('잘못된 유저 정보입니다.', 401);
+
+    const { sub, email, iat, exp } = decodedToken;
+
+    const curTimeStamp = Math.floor(new Date().getTime() / 1000);
+
+    if (sub && exp > curTimeStamp) {
+      const isSameRefresh = await this.userRepo.refreshTokenCheck(
+        sub,
+        refreshToken,
+      );
+
+      if (isSameRefresh) {
+        // 올바른 토큰 정보일 경우,
+
+        const accessToken = this.jwtService.sign(
+          { sub, email },
+          {
+            secret: process.env.ACCESS_TOKEN_SECRET_KEY,
+            expiresIn: `${process.env.ACCESS_TOKEN_REMAIN_TIME}m`,
+          },
+        );
+
+        res.cookie(process.env.ACCESS_TOKEN_NAME, accessToken, {
+          path: '/',
+          'max-age': `${process.env.ACCESS_TOKEN_REMAIN_TIME}`,
+          sameSite: 'lax',
+        });
+
+        return res.send({
+          statusCode: 201,
+          data: accessToken,
+        });
+      }
+    }
+
+    // 올바르지 못한 토큰 정보 일때,
+    throw new HttpException('잘못된 유저 정보입니다.', 401);
   }
 }

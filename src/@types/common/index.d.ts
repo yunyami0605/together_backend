@@ -13,3 +13,10 @@ export type TRequest = {
       }
     | undefined;
 };
+
+export type TAccessToken = {
+  sub?: number;
+  email?: string;
+  iat?: number;
+  exp?: number;
+};

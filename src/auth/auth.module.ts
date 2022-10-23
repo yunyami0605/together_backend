@@ -13,6 +13,7 @@ import { JwtStrategy } from './guard/jwt.strategy';
 import { KakaoStrategy } from './guard/kakao.strategy';
 import { NaverStrategy } from './guard/naver.strategy';
 import { GoogleStrategy } from './guard/google.strategy';
+import { JwtRefreshStrategy } from './guard/jwt-refresh.strategy';
 
 /**
  *@description : login, logout auth api module
@@ -22,8 +23,11 @@ import { GoogleStrategy } from './guard/google.strategy';
     PassportModule,
     TypeOrmModule.forFeature([UserRepository]),
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '4h' },
+      // secret: process.env.REFRESH_TOKEN_SECRET_KEY,
+      secret: process.env.ACCESS_TOKEN_SECRET_KEY,
+
+      // secret: jwtConstants.secret,
+      // signOptions: { expiresIn: '4h' },
     }),
     HttpModule.register({
       timeout: 5000,
@@ -38,6 +42,7 @@ import { GoogleStrategy } from './guard/google.strategy';
     KakaoStrategy,
     NaverStrategy,
     GoogleStrategy,
+    JwtRefreshStrategy,
     UserService,
   ],
   exports: [AuthService],

@@ -16,6 +16,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guard/google.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { JwtRefreshGuard } from './guard/jwt-refresh.guard';
 import { KakaoAuthGuard } from './guard/kakao.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { NaverAuthGuard } from './guard/naver.guard';
@@ -186,5 +187,16 @@ export class AuthController {
     // social login 인증이 안될 경우,
 
     throw new HttpException('NOT SOCIAL AUTHORIZED', 401);
+  }
+
+  // @UseGuards(JwtRefreshGuard)
+  @Post('/refresh')
+  refresh(@Req() req, @Res() res) {
+    console.log('@@@ REFRESH API');
+
+    return this.authService.refresh(
+      req.cookies[process.env.REFRESH_TOKEN_NAME],
+      res,
+    );
   }
 }

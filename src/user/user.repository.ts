@@ -217,4 +217,21 @@ export class UserRepository extends Repository<UserEntity> {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async refreshTokenCheck(id: number, refreshToken: string) {
+    try {
+      const res = (await this.findOne({
+        where: { id },
+        select: ['hashedRefreshToken'],
+      })) as { hashedRefreshToken: string } | undefined;
+
+      console.log('@@@ REFRESH TOKEN');
+      console.log(res);
+
+      return res?.hashedRefreshToken === refreshToken;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
